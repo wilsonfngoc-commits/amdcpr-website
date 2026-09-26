@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infographic Option 2 — Vertical Timeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Quicksand', 'Noto Sans TC', sans-serif; background: #FAF6F2; color: #4A4036; padding: 40px 20px; }
+.container { max-width: 700px; margin: 0 auto; }
+h1 { text-align: center; font-size: 28px; font-weight: 700; color: #4F6B5E; margin-bottom: 8px; }
+.subtitle { text-align: center; font-size: 14px; color: #7A6F64; margin-bottom: 40px; }
+.timeline { position: relative; padding-left: 40px; }
+.timeline::before { content: ''; position: absolute; left: 15px; top: 8px; bottom: 8px; width: 3px; background: #E6D7C8; border-radius: 2px; }
+.step { position: relative; margin-bottom: 28px; }
+.dot { position: absolute; left: -28px; top: 4px; width: 18px; height: 18px; border-radius: 50%; border: 3px solid; z-index: 1; }
+.dot.green { background: #4F6B5E; border-color: #4F6B5E; }
+.dot.amber { background: #8F4A42; border-color: #8F4A42; }
+.card { background: #fff; border-radius: 16px; padding: 20px 24px; box-shadow: 0 2px 10px rgba(112,141,129,0.08); }
+.card .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+.card .label.green-label { color: #4F6B5E; }
+.card .label.amber-label { color: #8F4A42; }
+.card h3 { font-size: 15px; font-weight: 700; color: #4A4036; margin-bottom: 6px; }
+.card p { font-size: 13px; line-height: 1.6; color: #7A6F64; }
+.footer { text-align: center; margin-top: 32px; padding-top: 20px; border-top: 1px solid #E6D7C8; font-size: 12px; color: #7A6F64; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>AMD 新例懶人包</h1>
+  <p class="subtitle">7.31 生效 — 5 個你要知的改變</p>
+  <div class="timeline">
+    <div class="step">
+      <div class="dot green"></div>
+      <div class="card">
+        <div class="label green-label">改變 1</div>
+        <h3>AMD 變為成文法·法律效力明確</h3>
+        <p>由普通法進入成文法框架，醫生執行時有清晰法律基礎，唔使再擔心法律責任。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="dot amber"></div>
+      <div class="card">
+        <div class="label amber-label">改變 2</div>
+        <h3>簽署流程更清晰</h3>
+        <p>18 歲以上、精神健全、自願、書面形式、兩名見證人（一位須為醫生）。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="dot green"></div>
+      <div class="card">
+        <div class="label green-label">改變 3</div>
+        <h3>三種情況先會觸發 AMD</h3>
+        <p>末期疾病、持續植物人狀況、晚期不可逆轉疾病。暫時昏迷唔會觸發。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="dot amber"></div>
+      <div class="card">
+        <div class="label amber-label">改變 4</div>
+        <h3>AMD 唔等於「乜都唔醫」</h3>
+        <p>只針對維持生命治療（CPR、呼吸機、洗腎），你仍然會接受舒緩治療。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="dot green"></div>
+      <div class="card">
+        <div class="label green-label">改變 5</div>
+        <h3>上門簽署更方便</h3>
+        <p>註冊西醫團隊提供上門簽署 AMD 服務，喺你屋企完成，全程約 30 分鐘。</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">DoctorNow AMD · 上門簽署 AMD 服務</div>
+</div>
+</body>
+</html>

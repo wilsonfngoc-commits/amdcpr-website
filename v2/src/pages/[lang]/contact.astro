@@ -1,0 +1,137 @@
+---
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'zh' } },
+    { params: { lang: 'en' } },
+  ];
+}
+import Layout from '../../layouts/Layout.astro';
+import { EMAIL, WA_DISPLAY, waUrlShort } from '../../lib/site';
+
+const lang = Astro.params.lang || 'zh';
+const isZh = lang === 'zh';
+
+const pageTitle = isZh ? '聯絡我們' : 'Contact Us';
+const pageDesc = isZh
+  ? '透過 WhatsApp 或電郵聯絡老友宅醫 DoctorNow AMD 團隊。即時查詢上門簽署預設醫療指示服務。'
+  : 'Contact the DoctorNow AMD team via WhatsApp or email. Inquire about home-visit Advance Medical Directive signing services.';
+const h1 = isZh ? '聯絡我們' : 'Contact Us';
+const intro = isZh
+  ? '我哋樂意解答你對預設醫療指示（AMD）嘅任何問題。無論係想了解服務內容、查詢收費，定係直接預約醫生上門，都可以透過以下方式聯絡我哋。'
+  : 'We\'re happy to answer any questions about Advance Medical Directives (AMD). Whether you want to learn about our services, inquire about pricing, or book a doctor\'s home visit, you can reach us through the following channels.';
+
+const waTitle = isZh ? 'WhatsApp（最快回覆）' : 'WhatsApp (Fastest Response)';
+const waNumber = WA_DISPLAY;
+const bookUrl = waUrlShort('AMD-S01', isZh ? 'zh' : 'en', isZh ? '我想了解預設醫療指示' : 'I want to learn about Advance Medical Directives');
+const waHint = isZh ? '按一下直接開始對話，通常幾分鐘內回覆。' : 'Tap to start a conversation — usually replied within minutes.';
+
+const emailTitle = isZh ? '電郵' : 'Email';
+const emailAddr = EMAIL;
+const emailHint = isZh ? '一般 1-2 個工作天內回覆。' : 'Usually replied within 1-2 business days.';
+
+const ctaTitle = isZh ? '準備好開始？' : 'Ready to get started?';
+const ctaDesc = isZh
+  ? 'WhatsApp 我哋，即刻安排醫生上門簽署 AMD。'
+  : 'WhatsApp us now to schedule a doctor\'s home visit for your AMD signing.';
+const waCta = isZh ? 'WhatsApp 即時預約' : 'Book via WhatsApp';
+
+const infoTitle = isZh ? '服務資訊' : 'Service Info';
+const infoItems = isZh
+  ? [
+      { label: '服務名稱', value: 'DoctorNow AMD（老友宅醫預設醫療指示服務）' },
+      { label: '服務時間', value: '星期一至六，上午 9 時至晚上 8 時' },
+      { label: '服務範圍', value: '香港島、九龍、新界及指定離島' },
+      { label: '醫生資歷', value: '香港醫務委員會註冊西醫' },
+    ]
+  : [
+      { label: 'Service', value: 'DoctorNow AMD (Advance Medical Directive Service)' },
+      { label: 'Service Hours', value: 'Monday to Saturday, 9 AM – 8 PM' },
+      { label: 'Coverage', value: 'Hong Kong Island, Kowloon, New Territories, and selected outlying islands' },
+      { label: 'Doctor Credentials', value: 'MCHK-registered medical practitioners' },
+    ];
+---
+
+<Layout title={pageTitle} description={pageDesc}>
+  <!-- HERO -->
+  <section class="pt-32 pb-20 px-6 md:px-12 bg-surface">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight text-primary">{h1}</h1>
+      <p class="text-lg md:text-xl text-on-surface-variant leading-relaxed max-w-3xl mx-auto">{intro}</p>
+    </div>
+  </section>
+
+  <!-- Contact Cards -->
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- WhatsApp Card -->
+      <a
+        href={bookUrl}
+        target="_blank"
+        rel="noopener"
+        class="rounded-3xl p-10 no-underline transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] bg-surface-container hover:opacity-95 border border-outline-variant"
+      >
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-surface border border-outline-variant">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+          </svg>
+        </div>
+        <h2 class="font-bold text-2xl mb-2 text-primary">{waTitle}</h2>
+        <p class="font-semibold mb-3 text-secondary">{waNumber}</p>
+        <p class="mb-6 text-lg text-on-surface-variant">{waHint}</p>
+        <span class="inline-block text-white font-bold px-6 py-4 rounded-full bg-primary">
+          {isZh ? '開啟 WhatsApp →' : 'Open WhatsApp →'}
+        </span>
+      </a>
+
+      <!-- Email Card -->
+      <div class="rounded-3xl p-10 bg-surface border border-outline-variant">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-surface-container">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
+        </div>
+        <h2 class="font-bold text-2xl mb-2 text-primary">{emailTitle}</h2>
+        <p class="font-semibold mb-3 text-primary">{emailAddr}</p>
+        <p class="mb-6 text-lg text-on-surface-variant">{emailHint}</p>
+        <a
+          href={`mailto:${emailAddr}`}
+          class="inline-block font-bold px-6 py-4 rounded-full text-lg no-underline border-2 border-primary text-primary"
+        >
+          {isZh ? '發送電郵 →' : 'Send Email →'}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Info -->
+  <section class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-center mb-12 text-primary">{infoTitle}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {infoItems.map((item) => (
+          <div class="rounded-2xl p-6 bg-surface">
+            <p class="text-sm font-semibold uppercase tracking-wider mb-1 text-secondary">{item.label}</p>
+            <p class="text-lg text-on-surface">{item.value}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 px-6 md:px-12 text-white text-center bg-primary">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide mb-6">{ctaTitle}</h2>
+      <p class="text-lg mb-10 text-white/80">{ctaDesc}</p>
+      <a
+        href={bookUrl}
+        target="_blank"
+        rel="noopener"
+        class="inline-block text-lg font-bold px-8 py-4 rounded-full no-underline hover:opacity-90 transition-opacity bg-secondary text-white"
+      >
+        {waCta}
+      </a>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,404 @@
+---
+export async function getStaticPaths() {
+ return [
+ { params: { lang: 'zh' } },
+ { params: { lang: 'en' } },
+ ];
+}
+import Layout from '../../layouts/Layout.astro';
+import { waUrlShort } from '../../lib/site';
+import { icons } from '../../lib/icons';
+
+const lang = Astro.params.lang || 'zh';
+const isZh = lang === 'zh';
+
+const pageTitle = isZh ? '服務收費' : 'Pricing';
+const pageDesc = isZh
+ ? '透明收費，清晰流程。WhatsApp 查詢即時報價。老友宅醫提供上門簽署 AMD 及相關服務。'
+ : 'Transparent pricing, clear process. Get an instant quote via WhatsApp. DoctorNow provides home-visit AMD signing and related services.';
+const h1 = isZh ? '服務收費' : 'Our Pricing';
+const h1Sub = isZh
+ ? '收費透明，絕無隱藏費用。由於每位客戶情況不同，實際報價請 WhatsApp 查詢。'
+ : 'Transparent pricing with no hidden fees. Since each client\'s situation is unique, please contact us on WhatsApp for a personalised quote.';
+
+const lastUpdated = isZh ? '更新日期：2026年9月' : 'Last updated: September 2026';
+
+const waUrl = waUrlShort(
+  'AMD-S05',
+  isZh ? 'zh' : 'en',
+  isZh ? '我想查詢AMD服務收費' : 'I want to inquire about AMD service pricing'
+);
+
+const packages = isZh
+ ? [
+ {
+ title: 'AMD 基本計劃',
+ subtitle: '上門簽署預設醫療指示',
+ priceLabel: 'HK$1,900',
+ features: [
+ '香港註冊西醫親自上門',
+ '精神狀態評估',
+ '見證人安排（包括醫生見證人）',
+ '文件草擬及核對',
+ '正本交付家屬保存',
+ '包含醫健通上載服務',
+ '全程約 30 分鐘',
+ ],
+ cta: 'WhatsApp 查詢',
+ highlighted: true,
+ },
+ {
+ title: '不急救紙',
+ subtitle: 'DNACPR Form（普通科醫生＋專科醫生）',
+ priceLabel: 'HK$4,900',
+ waPreset: 'AMD-S11',
+ customText: '我想查詢不急救紙服務收費',
+ features: [
+ 'DNACPR Form 上門簽署服務',
+ '普通科醫生及專科醫生各 1 位上門',
+ '精神狀態評估',
+ '文件正本交付家屬保存',
+ '包含醫健通上載服務',
+ ],
+ cta: 'WhatsApp 查詢',
+ highlighted: false,
+ },
+ {
+ title: 'AMD + EPA',
+ subtitle: '預設醫療指示＋持久授權書',
+ priceLabel: 'HK$2,900',
+ features: [
+ 'AMD 上門簽署服務',
+ '包含醫健通上載服務',
+ 'EPA（持久授權書）文件協助',
+ '一次預約，兩份文件',
+ '比分別辦理更實惠',
+ '如有需要，協助轉介律師',
+ ],
+ cta: 'WhatsApp 查詢',
+ highlighted: false,
+ },
+ {
+ title: '二人同行 AMD',
+ subtitle: '兩人同時預約・上門簽署',
+ priceLabel: 'HK$3,200',
+ priceNote: '每人 HK$1,600',
+ features: [
+ '兩位家人同一次上門簽署',
+ '各自獨立精神狀態評估',
+ '各自文件獨立處理',
+ '比分開預約更優惠',
+ '包含醫健通上載服務',
+ '適合夫妻或兄弟姊妹',
+ ],
+ cta: 'WhatsApp 查詢',
+ highlighted: false,
+ },
+ {
+ title: 'NGO機構合作',
+ subtitle: '批量簽署、免費講座',
+ priceLabel: '機構合作方案',
+ features: [
+ '批量 AMD 簽署服務',
+ '社區免費教育講座',
+ '培訓工作坊',
+ '靈活安排上門或場地',
+ '個案轉介支援',
+ '歡迎社福機構查詢',
+ ],
+ cta: 'WhatsApp 查詢',
+ highlighted: false,
+ },
+ {
+ title: 'ACP 諮詢服務',
+ subtitle: '預設照顧計劃顧問',
+ priceLabel: '按時收費',
+ features: [
+ '一對一預設照顧計劃諮詢',
+ '全面講解 AMD / DNACPR / EPA',
+ '個人化建議書',
+ '助你同家人溝通臨終意願',
+ '可配合醫生上門跟進',
+ ],
+ cta: 'WhatsApp 查詢',
+ highlighted: false,
+ },
+ ]
+ : [
+ {
+ title: 'AMD Basic Plan',
+ subtitle: 'Home-Visit AMD Signing',
+ priceLabel: 'HK$1,900',
+ features: [
+ 'MCHK-registered doctor home visit',
+ 'Mental Capacity Assessment',
+ 'Witness arrangement (including doctor witness)',
+ 'Document drafting and verification',
+ 'Original document delivered to family',
+ 'Includes eHealth upload service',
+ 'Approximately 30 minutes',
+ ],
+ cta: 'Inquire on WhatsApp',
+ highlighted: true,
+ },
+ {
+ title: 'DNACPR Form',
+ subtitle: 'GP + Specialist home-visit signing',
+ priceLabel: 'HK$4,900',
+ waPreset: 'AMD-S11',
+ customText: 'I want to inquire about DNACPR form service',
+ features: [
+ 'DNACPR Form home-visit signing service',
+ 'GP and specialist doctor each home visit',
+ 'Mental Capacity Assessment',
+ 'Original document delivered to family',
+ 'Includes eHealth upload service',
+ ],
+ cta: 'Inquire on WhatsApp',
+ highlighted: false,
+ },
+ {
+ title: 'AMD + EPA Combo',
+ subtitle: 'AMD & Enduring Power of Attorney',
+ priceLabel: 'HK$2,900',
+ features: [
+ 'AMD home-visit signing service',
+ 'Includes eHealth upload service',
+ 'EPA document assistance',
+ 'One booking, two documents',
+ 'More affordable than separate arrangements',
+ 'Lawyer referral if needed',
+ ],
+ cta: 'Inquire via WhatsApp',
+ highlighted: false,
+ },
+ {
+ title: 'Two-Person AMD',
+ subtitle: 'Two signatories, one home visit',
+ priceLabel: 'HK$3,200',
+ priceNote: 'HK$1,600 per person',
+ features: [
+ 'Two family members sign in one visit',
+ 'Separate capacity assessment for each',
+ 'Documents prepared individually',
+ 'Better value than separate bookings',
+ 'Includes eHealth upload service',
+ 'Ideal for couples or siblings',
+ ],
+ cta: 'Inquire on WhatsApp',
+ highlighted: false,
+ },
+ {
+ title: 'NGO Partnership',
+ subtitle: 'Bulk signing, free workshops',
+ priceLabel: 'Partnership plans',
+ features: [
+ 'Bulk AMD signing service',
+ 'Free community education workshops',
+ 'Training workshops',
+ 'Flexible home or venue arrangements',
+ 'Case referral support',
+ 'Welcome to inquire',
+ ],
+ cta: 'Inquire on WhatsApp',
+ highlighted: false,
+ },
+ {
+ title: 'ACP Consultation',
+ subtitle: 'Advance Care Planning Advisory',
+ priceLabel: 'Hourly consultation fee',
+ features: [
+ 'One-on-one Advance Care Planning consultation',
+ 'Comprehensive explanation of AMD/DNACPR/EPA',
+ 'Personalised recommendation report',
+ 'Help facilitate family discussions on end-of-life wishes',
+ 'Can be followed up with doctor home visit',
+ ],
+ cta: 'Inquire on WhatsApp',
+ highlighted: false,
+ },
+ ];
+
+const coverageTitle = isZh ? '服務範圍' : 'Coverage Area';
+const coverageDesc = isZh
+ ? '我們為香港各區提供上門服務，包括：'
+ : 'We provide home-visit services across Hong Kong:';
+const coverageAreas = isZh
+ ? ['香港島', '九龍', '新界', '指定離島']
+ : ['Hong Kong Island', 'Kowloon', 'New Territories', 'Selected Islands'];
+const coverageNote = isZh
+ ? '離島服務需視乎醫生檔期，請 WhatsApp 查詢。'
+ : 'Outlying island services depend on doctor availability. Please inquire via WhatsApp.';
+
+const trustTitle = isZh ? '點解信任我哋？' : 'Why Trust Us?';
+
+/* FAQ structured data (pricing questions — for AI citation accuracy) */
+const faqJsonLd = {
+ '@context': 'https://schema.org',
+ '@type': 'FAQPage',
+ mainEntity: isZh
+  ? [
+    {
+     '@type': 'Question',
+     name: '簽署AMD費用幾多？',
+     acceptedAnswer: {
+      '@type': 'Answer',
+      text: 'AMD 基本計劃（上門簽署預設醫療指示）收費為 HK$1,900，包含註冊西醫上門、精神狀態評估、見證人安排、文件草擬及醫健通上載等服務。AMD + EPA 組合收費為 HK$2,900。二人同行 AMD 為 HK$3,200（每人 HK$1,600）。',
+     },
+    },
+    {
+     '@type': 'Question',
+     name: '有冇額外費用？',
+     acceptedAnswer: {
+      '@type': 'Answer',
+      text: '收費透明，絕無隱藏費用。由於每位客戶情況不同，實際報價請 WhatsApp 查詢，專人會詳細講解收費及流程。',
+     },
+    },
+   ]
+  : [
+    {
+     '@type': 'Question',
+     name: 'How much does it cost to sign an AMD?',
+     acceptedAnswer: {
+      '@type': 'Answer',
+      text: 'The AMD Basic Plan (home-visit AMD signing) costs HK$1,900, including a registered doctor home visit, mental capacity assessment, witness arrangement, document drafting, and eHealth upload. The AMD + EPA combo costs HK$2,900. The Two-Person AMD plan is HK$3,200 (HK$1,600 per person).',
+     },
+    },
+    {
+     '@type': 'Question',
+     name: 'Are there any additional fees?',
+     acceptedAnswer: {
+      '@type': 'Answer',
+      text: 'Pricing is transparent with no hidden fees. As each client\'s situation is unique, please contact us on WhatsApp for a personalised quote.',
+     },
+    },
+   ],
+};
+
+const trustItems = isZh
+ ? [
+ { icon: 'verified', text: '香港註冊西醫團隊', sub: '所有醫生均持有有效執業證明' },
+ { icon: 'group', text: '累積超過 10,000 次上門服務', sub: '豐富的社區醫療經驗' },
+ { icon: 'description', text: '法律認可文件', sub: '符合 Cap. 651 條例要求' },
+ { icon: 'currency_exchange', text: '透明收費', sub: '絕無隱藏收費' },
+ ]
+ : [
+ { icon: 'verified', text: 'MCHK-Registered Doctors', sub: 'All doctors hold valid practising certificates' },
+ { icon: 'group', text: 'Over 10,000 Home Visits', sub: 'Extensive community medical experience' },
+ { icon: 'description', text: 'Legally Recognised Documents', sub: 'Compliant with Cap. 651' },
+ { icon: 'currency_exchange', text: 'Transparent Pricing', sub: 'No hidden fees, quote via WhatsApp' },
+ ];
+---
+
+<Layout title={pageTitle} description={pageDesc}>
+  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd, null, 2)}></script>
+  <section class="pt-32 pb-20 px-6 md:px-12 bg-surface">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight text-primary">{h1}</h1>
+      <p class="text-lg md:text-xl text-on-surface-variant leading-relaxed max-w-3xl mx-auto">{h1Sub}</p>
+      <p class="mt-4 text-sm text-on-surface-variant">{lastUpdated}</p>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {packages.map((pkg) => (
+          <div
+            class:list={[
+              'rounded-3xl flex flex-col bg-surface border border-outline-variant',
+              { 'relative ring-2 ring-secondary': pkg.highlighted },
+            ]}
+          >
+            {pkg.highlighted && (
+              <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white bg-secondary">
+                {isZh ? '最受歡迎' : 'Most Popular'}
+              </div>
+            )}
+            <div class="p-8 flex-1 flex flex-col">
+              <div class="min-h-[7.5rem]">
+                <h3 class="text-2xl font-bold text-primary">{pkg.title}</h3>
+                <p class="mb-6 text-on-surface-variant text-sm">{pkg.subtitle}</p>
+              </div>
+              <p class:list={["text-2xl font-bold text-secondary whitespace-nowrap", pkg.priceNote ? "mb-1" : "mb-6"]}>{pkg.priceLabel}</p>
+              {pkg.priceNote && <p class="text-xs text-on-surface-variant mb-6">{pkg.priceNote}</p>}
+              <ul class="space-y-3 text-sm flex-1 mb-8">
+                {pkg.features.map((f) => (
+                  <li class="flex items-start gap-2">
+                    <span class="mt-0.5 text-primary">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    <span class="text-on-surface">{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={waUrlShort(pkg.waPreset ?? 'AMD-S02', isZh ? 'zh' : 'en', pkg.customText)}
+                data-wa-shortcode={pkg.waPreset ?? 'AMD-S02'}
+                data-wa-lang={isZh ? 'zh' : 'en'}
+                data-wa-customtext={pkg.customText ?? ''}
+                target="_blank"
+                rel="noopener"
+                class="block text-center text-white font-bold px-6 py-4 rounded-full no-underline hover:opacity-90 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] bg-primary"
+              >
+                {pkg.cta}
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-6">{coverageTitle}</h2>
+      <p class="mb-12 text-lg text-on-surface-variant">{coverageDesc}</p>
+      <div class="flex flex-wrap justify-center gap-6">
+        {coverageAreas.map((area) => (
+          <div class="rounded-2xl px-8 py-6 bg-surface-container border border-outline-variant">
+            <span class="icon-wrapper text-2xl text-primary block mb-2" set:html={icons.location_on} />
+            <p class="font-bold text-lg text-on-surface">{area}</p>
+          </div>
+        ))}
+      </div>
+      <p class="mt-10 text-sm text-on-surface-variant italic">{coverageNote}</p>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface-container-low">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary text-center mb-12">{trustTitle}</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {trustItems.map((item) => (
+          <div class="text-center">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-surface">
+              <span class="icon-wrapper text-2xl text-primary" set:html={icons[item.icon]} />
+            </div>
+            <h4 class="font-bold mb-2 text-lg text-on-surface">{item.text}</h4>
+            <p class="text-sm text-on-surface-variant">{item.sub}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 text-white text-center bg-primary">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide mb-4">
+        {isZh ? '越了解、越心安' : 'Know more, Worry less'}
+      </h2>
+      <p class="text-lg mb-8 text-white/80">
+        {isZh ? 'WhatsApp 我哋，專人講解收費同流程。' : 'WhatsApp us for a detailed explanation of pricing and process.'}
+      </p>
+      <a
+        href={waUrl}
+        target="_blank"
+        rel="noopener"
+        class="inline-block text-lg font-bold px-8 py-4 rounded-full no-underline hover:opacity-90 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] bg-secondary text-white"
+      >
+        WhatsApp {isZh ? '查詢收費' : 'Get a Quote'}
+      </a>
+    </div>
+  </section>
+</Layout>

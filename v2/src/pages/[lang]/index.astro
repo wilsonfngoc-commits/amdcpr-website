@@ -1,0 +1,378 @@
+---
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'zh' } },
+    { params: { lang: 'en' } },
+  ];
+}
+import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import { waUrlShort } from '../../lib/site';
+import { icons } from '../../lib/icons';
+import heroImg from '../../assets/hero-home.jpg';
+
+const lang = Astro.params.lang || 'zh';
+const isZh = lang === 'zh';
+const prefix = `/${lang}`;
+
+const t = {
+  heroEyebrow: isZh ? '預設醫療指示' : 'Advance Medical Directive',
+  heroTitle1: isZh ? '我唔想急救，唔想插喉' : "I don't want CPR, intubation,",
+  heroTitle2: isZh ? '唔想俾機器吊住條命.' : 'or being kept alive by machines.',
+  heroDesc: isZh
+    ? '預設醫療指示（AMD）幫你寫低最後意願，上門簽妥，30分鐘搞掂。由香港註冊西醫上門主理，確保文件合法有效。'
+    : 'An Advance Medical Directive (AMD) lets you document your end-of-life wishes — signed at home in about 30 minutes by an MCHK-registered doctor.',
+  heroCta: isZh ? '了解多啲' : 'Learn More',
+  heroCta2: isZh ? '立即預約' : 'Book Now',
+  heroCaption: isZh
+    ? '老友宅醫 DoctorNow Home · 累積超過 10,000 次上門服務'
+    : 'DoctorNow Home · 10,000+ home visits',
+  servicesEyebrow: isZh ? 'Find Your Path' : 'Find Your Path',
+  servicesTitle: isZh ? '你係邊類？我哋點幫到你' : 'Which path fits you?',
+  servicePatientTitle: isZh ? '我是末期病人／家屬' : "I'm a terminal patient / family member",
+  servicePatientDesc: isZh ? '醫生上門簽署，在家離世' : 'Doctor home visit for AMD signing — peaceful passing at home',
+  servicePatientCta: isZh ? '了解上門簽署' : 'Learn about home signing',
+  servicePlanTitle: isZh ? '我想預早規劃' : 'I want to plan ahead',
+  servicePlanDesc: isZh ? 'AMD vs DNACPR，費用透明' : 'AMD vs DNACPR, transparent pricing',
+  servicePlanCta: isZh ? '睇分別同費用' : 'Compare & pricing',
+  serviceNgoTitle: isZh ? '我是社福機構' : "I'm an NGO / institution",
+  serviceNgoDesc: isZh ? '批量簽署，免費講座' : 'Bulk signing, free workshops',
+  serviceNgoCta: isZh ? '合作查詢' : 'Partnership inquiry',
+  serviceLawyerTitle: isZh ? '我是律師' : "I'm a lawyer",
+  serviceLawyerDesc: isZh ? '轉介合作' : 'Referral partnership',
+  serviceLawyerCta: isZh ? '轉介查詢' : 'Referral inquiry',
+  trustDoctor: isZh ? '香港註冊西醫' : 'HK Registered',
+  trustLegal: isZh ? '法律認可' : 'Legally Recognised',
+  trustVisits: isZh ? '10,000+ 次上門' : '10,000+ Visits',
+  trustPricing: isZh ? '收費透明' : 'Transparent Pricing',
+  processEyebrow: isZh ? '預約流程' : 'HOW IT WORKS',
+  processTitle: isZh ? '簡單三步，完成簽署' : 'Three simple steps',
+  processStep1Title: isZh ? 'WhatsApp 聯絡' : 'Contact us on WhatsApp',
+  processStep1Desc: isZh
+    ? '點擊按鈕即時諮詢，了解您嘅需要，初步報價同安排醫生檔期。'
+    : "Click to chat. We'll understand your needs, provide a quote, and schedule a doctor visit.",
+  processStep2Title: isZh ? '醫生上門評估' : 'Doctor home visit',
+  processStep2Desc: isZh
+    ? '註冊西醫親臨家中，進行身心健康評估，確保您神智清醒下理解文件內容。'
+    : 'A registered doctor visits your home to assess capacity and explain the document.',
+  processStep3Title: isZh ? '在家簽署完成' : 'Sign at home',
+  processStep3Desc: isZh
+    ? '兩名見證人面前簽署文件，即場完成法律程序，全程約30分鐘。'
+    : 'Sign before two witnesses. Legal process completed on the spot in about 30 minutes.',
+  processCta: isZh ? '睇完整流程 →' : 'See full process →',
+  honestHeader: isZh ? '誠實講清楚' : 'HONEST & CLEAR',
+  honestTitle: isZh
+    ? '如果我喺屋企突然心跳停咗，救護員係咪唔會幫我做 CPR？'
+    : 'If my heart stops at home, will paramedics NOT do CPR?',
+  honestP1: isZh
+    ? 'AMD 唔會阻止救護員做 CPR。因為救護員冇辦法喺現場判斷你係咪符合 AMD 嘅三個指定情況。要令救護員唔做 CPR，你需要一份由兩位醫生簽署嘅 DNACPR 文件。'
+    : 'An AMD does not prevent paramedics from performing CPR. They cannot determine on-site whether your AMD conditions are met. For that, you need a DNACPR order signed by two doctors.',
+  honestP2: isZh
+    ? 'AMD 係你嘅意願聲明——當醫生診斷你符合條件時，佢會生效。我哋建議同時了解 DNACPR，咁先做到全面保障。'
+    : 'An AMD is your advance declaration of wishes — it takes effect once a doctor confirms you meet the criteria. We recommend understanding both AMD and DNACPR.',
+  honestP3: isZh
+    ? '我哋可以幫你安排兩樣文件，確保無論喺屋企定醫院，你嘅意願都受到尊重。'
+    : 'We can help arrange both documents so your wishes are respected at home or in hospital.',
+  honestCta1: isZh ? '了解 AMD vs DNACPR' : 'Learn AMD vs DNACPR',
+  honestCta2: isZh ? '睇更多常見問題' : 'View FAQ',
+  homeDeathTitle: isZh
+    ? '選擇在家離世？你可能唔需要 AMD 或 DNACPR'
+    : 'Planning a home death? You may not need AMD or DNACPR',
+  homeDeathP1: isZh
+    ? '如果你選擇在家離世，私家醫生可以喺病人離世後發出《死因證明書》，毋須報警、毋須叫救護車、毋須入院。呢個情況下，唔需要 AMD 或 DNACPR 文件。'
+    : 'For a planned home death, a private doctor can issue a Medical Certificate of Cause of Death — no police, ambulance, or hospital. In that case, AMD and DNACPR are not required.',
+  homeDeathP2: isZh
+    ? 'AMD 同 DNACPR 主要喺公立醫療系統入面發揮作用。如果你嘅計劃係在家離世，呢兩份文件嘅作用會唔同。'
+    : 'AMD and DNACPR matter most inside the public hospital system. If your plan is a home death, their role is different.',
+  homeDeathCta: isZh ? '了解在家離世方案 →' : 'Learn about home death →',
+};
+
+const bookUrl = waUrlShort('AMD-S01', isZh ? 'zh' : 'en', isZh ? '我想了解預設醫療指示' : 'I want to learn about Advance Medical Directives');
+const easeClass = 'transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]';
+---
+
+<Layout
+  title={isZh ? 'DNACPR & 預設醫療指示 上門簽署 | 香港註冊西醫 | DoctorNow' : 'DNACPR & AMD — Home Signing | Hong Kong Registered Doctors | DoctorNow'}
+  description={isZh
+    ? 'DNACPR 表格由兩位醫生簽署，確保救護員唔做 CPR；AMD 同步處理。WhatsApp 預約上門，30 分鐘搞掂。律師見證版本齊全。'
+    : "DNACPR order signed by two doctors so paramedics don't perform CPR. AMD handled in the same visit. WhatsApp booking, about 30 minutes. Witnessed & legally recognised."}
+>
+  <!-- HERO — left copy + organic image, moss/terracotta -->
+  <section class="relative px-6 md:px-12 pt-28 md:pt-36 pb-16 md:pb-24 max-w-7xl mx-auto overflow-hidden">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-surface-container rounded-full blur-3xl opacity-60 -z-10 translate-x-1/3 -translate-y-1/3" aria-hidden="true"></div>
+    <div class="absolute bottom-0 left-0 w-72 h-72 bg-primary/10 rounded-full blur-3xl opacity-60 -z-10 -translate-x-1/3 translate-y-1/3" aria-hidden="true"></div>
+
+    <div class="relative grid grid-cols-1 md:grid-cols-12 items-end gap-8 md:gap-10">
+      <div class:list={['z-10 text-left', isZh ? 'md:col-span-8 md:pr-4' : 'md:col-span-12 md:pr-[300px]']}>
+        <p class="text-sm font-bold tracking-[0.2em] uppercase text-secondary mb-4">{t.heroEyebrow}</p>
+        {isZh ? (
+          <h1 class="text-5xl md:text-6xl font-bold tracking-wide mb-8 leading-[1.3] text-primary">
+            <span class="md:whitespace-nowrap">{t.heroTitle1}</span>
+            <br />
+            <span class="relative inline-block md:whitespace-nowrap">
+              {t.heroTitle2}
+              <svg class="absolute -bottom-1 left-0 w-full h-3 text-outline-variant" fill="none" preserveAspectRatio="none" viewBox="0 0 200 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M0 10C50 2 150 2 200 10" stroke="currentColor" stroke-linecap="round" stroke-width="4"></path>
+              </svg>
+            </span>
+          </h1>
+        ) : (
+          <h1 class="text-4xl md:text-5xl font-bold tracking-normal mb-8 leading-[1.25] text-primary">
+            <span class="block">{t.heroTitle1}</span>
+            <span class="relative block w-fit max-w-full">
+              {t.heroTitle2}
+              <svg class="absolute -bottom-1 left-0 w-full h-3 text-outline-variant" fill="none" preserveAspectRatio="none" viewBox="0 0 200 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M0 10C50 2 150 2 200 10" stroke="currentColor" stroke-linecap="round" stroke-width="4"></path>
+              </svg>
+            </span>
+          </h1>
+        )}
+        <p class="text-lg md:text-xl text-on-surface leading-relaxed mb-4 max-w-2xl zh-text-flow">{t.heroDesc}</p>
+        <p class="text-sm text-on-surface-variant mb-10">{t.heroCaption}</p>
+        <div class="flex flex-wrap gap-4 max-w-[58%] md:max-w-none">
+          <a
+            href={`${prefix}/what-is-amd`}
+            class={`group bg-secondary text-white px-7 py-4 rounded-full font-bold text-lg no-underline inline-flex items-center gap-3 shadow-lg shadow-secondary/20 hover:opacity-90 hover:-translate-y-0.5 ${easeClass}`}
+          >
+            {t.heroCta}
+            <span class={`inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/20 ${easeClass}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </a>
+          <a
+            href={bookUrl}
+            target="_blank"
+            rel="noopener"
+            class={`bg-surface-container text-primary px-7 py-4 rounded-full font-bold text-lg no-underline inline-flex items-center gap-2 hover:bg-outline-variant ${easeClass}`}
+          >
+            {t.heroCta2}
+          </a>
+        </div>
+      </div>
+
+      <div class:list={[
+        'absolute bottom-0 right-0 w-[38%] max-w-[200px]',
+        isZh ? 'md:static md:col-span-4 md:w-full md:max-w-none' : 'md:w-[280px] md:max-w-[280px]',
+      ]}>
+        <div class="relative aspect-[4/5] w-full md:max-w-[280px] ml-auto">
+          <div class="absolute inset-0 organic-shape scale-105 translate-x-3 translate-y-4 bg-primary/20" aria-hidden="true"></div>
+          <div class="absolute inset-0 organic-shape scale-105 -translate-x-2 -translate-y-3 bg-secondary/20" aria-hidden="true"></div>
+          <Image
+            src={heroImg}
+            alt={isZh ? '溫暖安心的家居環境，適合醫生上門簽署預設醫療指示' : 'Warm, comforting home environment for AMD home signing'}
+            class="absolute inset-0 w-full h-full object-cover z-10 organic-shape"
+            style="box-shadow: 0 20px 40px -22px rgba(112, 141, 129, 0.32);"
+            widths={[280, 560, 800]}
+            sizes="(max-width: 768px) 200px, 280px"
+            width={800}
+            height={1000}
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BAR — full-bleed warm sand with soft wave edges -->
+  <section class="bg-surface-container py-12 relative overflow-hidden" data-reveal>
+    <div class="absolute top-0 w-full h-12 bg-surface rounded-b-[100%] scale-110 -translate-y-6" aria-hidden="true"></div>
+    <div class="absolute bottom-0 w-full h-12 bg-surface rounded-t-[100%] scale-110 translate-y-6 z-10" aria-hidden="true"></div>
+    <div class="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-2 md:grid-cols-4 place-items-center gap-x-8 gap-y-8 relative z-0 py-4">
+      {[
+        { icon: 'verified', label: t.trustDoctor },
+        { icon: 'gavel', label: t.trustLegal },
+        { icon: 'home_health', label: t.trustVisits },
+        { icon: 'payments', label: t.trustPricing },
+      ].map((item, i) => (
+        <div class="flex flex-col items-center gap-3" data-reveal-delay={i}>
+          <div class="w-16 h-16 rounded-3xl bg-white flex items-center justify-center shadow-sm">
+            <span class="icon-wrapper text-3xl text-primary" set:html={icons[item.icon]} />
+          </div>
+          <span class="font-bold text-on-surface-variant tracking-wide text-sm">{item.label}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- 4-LANE ROUTER — asymmetric 8+4 / 6+6 -->
+  <section class="px-6 md:px-12 py-24 max-w-7xl mx-auto relative" data-reveal>
+    <div class="absolute top-1/2 left-0 w-full h-full bg-primary/5 blur-3xl rounded-full -z-10 pointer-events-none" aria-hidden="true"></div>
+    <div class="text-left md:text-center mb-16">
+      <span class="text-secondary font-bold tracking-widest uppercase mb-4 block text-sm">{t.servicesEyebrow}</span>
+      <h2 class="text-3xl md:text-5xl font-bold text-primary tracking-wide">{t.servicesTitle}</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+      <a href={`${prefix}/pricing`} class="md:col-span-8 lane-card group cursor-pointer flex flex-col justify-between relative overflow-hidden no-underline">
+        <div class="relative z-10">
+          <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-6 shadow-sm">
+            <span class="icon-wrapper text-3xl text-secondary" set:html={icons.home_health} />
+          </div>
+          <h3 class="md:text-3xl text-2xl font-bold text-primary mb-4">{t.servicePatientTitle}</h3>
+          <p class="max-w-xl mb-8 text-lg text-on-surface-variant zh-text-flow">{t.servicePatientDesc}</p>
+          <span class={`text-secondary font-bold flex items-center gap-2 group-hover:gap-3 text-lg ${easeClass}`}>
+            {t.servicePatientCta}
+            <span class="icon-wrapper text-xl" set:html={icons.arrow_forward} />
+          </span>
+        </div>
+      </a>
+      <a href={`${prefix}/amd-vs-dnacpr`} class="md:col-span-4 lane-card lane-card-accent group cursor-pointer flex flex-col justify-between no-underline">
+        <div class="relative z-10">
+          <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-6 shadow-sm">
+            <span class="icon-wrapper text-3xl text-primary" set:html={icons.calendar_month} />
+          </div>
+          <h3 class="text-2xl font-bold text-primary mb-4">{t.servicePlanTitle}</h3>
+          <p class="mb-10 text-lg text-on-surface-variant zh-text-flow">{t.servicePlanDesc}</p>
+        </div>
+        <span class={`text-primary font-bold flex items-center gap-2 group-hover:gap-3 text-lg ${easeClass}`}>
+          {t.servicePlanCta}
+          <span class="icon-wrapper text-xl" set:html={icons.arrow_forward} />
+        </span>
+      </a>
+      <a href={`${prefix}/contact`} class="md:col-span-6 lane-card group cursor-pointer flex flex-col justify-between no-underline">
+        <div>
+          <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-8 shadow-sm">
+            <span class="icon-wrapper text-3xl text-secondary" set:html={icons.corporate_fare} />
+          </div>
+          <h3 class="text-2xl font-bold text-primary mb-4">{t.serviceNgoTitle}</h3>
+          <p class="text-lg text-on-surface-variant zh-text-flow">{t.serviceNgoDesc}</p>
+        </div>
+        <span class={`text-secondary font-bold flex items-center gap-2 group-hover:gap-3 text-lg mt-8 ${easeClass}`}>
+          {t.serviceNgoCta}
+          <span class="icon-wrapper text-xl" set:html={icons.arrow_forward} />
+        </span>
+      </a>
+      <a href={`${prefix}/contact`} class="md:col-span-6 lane-card group cursor-pointer flex flex-col justify-between no-underline">
+        <div>
+          <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center mb-8 shadow-sm">
+            <span class="icon-wrapper text-3xl text-primary" set:html={icons.balance} />
+          </div>
+          <h3 class="text-2xl font-bold text-primary mb-4">{t.serviceLawyerTitle}</h3>
+          <p class="text-lg text-on-surface-variant zh-text-flow">{t.serviceLawyerDesc}</p>
+        </div>
+        <span class={`text-primary font-bold flex items-center gap-2 group-hover:gap-3 text-lg mt-8 ${easeClass}`}>
+          {t.serviceLawyerCta}
+          <span class="icon-wrapper text-xl" set:html={icons.arrow_forward} />
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- HONEST SECTION — rounded warm-sand panel -->
+  <section class="px-4 md:px-12 mb-24" data-reveal>
+    <div class="bg-surface-container rounded-[3rem] md:rounded-[4rem] py-16 md:py-24 px-6 md:px-16 max-w-7xl mx-auto">
+      <p class="text-secondary font-bold tracking-widest uppercase mb-4 text-sm">{t.honestHeader}</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-primary tracking-wide leading-[1.3] mb-10 max-w-4xl">{t.honestTitle}</h2>
+
+      <details class="group bg-surface rounded-2xl overflow-hidden mb-4 shadow-sm" open>
+        <summary class="cursor-pointer list-none flex items-center justify-between gap-4 p-6 font-bold text-primary">
+          <span>{isZh ? 'AMD 同救護員 CPR 嘅關係' : 'AMD and paramedic CPR'}</span>
+          <span class="transition-transform duration-500 group-open:rotate-180 text-primary" set:html={icons.expand_more} />
+        </summary>
+        <div class="px-6 pb-6 space-y-4 text-on-surface leading-relaxed zh-text-flow">
+          <p>{t.honestP1}</p>
+          <p>{t.honestP2}</p>
+          <p>{t.honestP3}</p>
+          <p class="flex flex-wrap gap-x-5 gap-y-2 pt-1">
+            {isZh ? (
+              <>
+                <a href={`${prefix}/blog/dnacpr-vs-amd-comparison/`} class="font-semibold text-secondary no-underline hover:underline">了解 DNACPR 同 AMD 嘅分別 →</a>
+                <a href={`${prefix}/blog/dnacpr-form-how-to-apply/`} class="font-semibold text-secondary no-underline hover:underline">點樣申請 DNACPR 表格 →</a>
+                <a href={`${prefix}/blog/no-intubation-dnacpr-vs-amd/`} class="font-semibold text-secondary no-underline hover:underline">唔想插喉嘅話可以點做 →</a>
+              </>
+            ) : (
+              <>
+                <a href={`${prefix}/blog/dnacpr-vs-amd-comparison/`} class="font-semibold text-secondary no-underline hover:underline">The difference between DNACPR and AMD →</a>
+                <a href={`${prefix}/blog/dnacpr-form-how-to-apply/`} class="font-semibold text-secondary no-underline hover:underline">How to apply for a DNACPR form →</a>
+                <a href={`${prefix}/blog/no-intubation-dnacpr-vs-amd/`} class="font-semibold text-secondary no-underline hover:underline">Don't want intubation? What you should know →</a>
+              </>
+            )}
+          </p>
+        </div>
+      </details>
+      <details class="group bg-surface rounded-2xl overflow-hidden shadow-sm">
+        <summary class="cursor-pointer list-none flex items-center justify-between gap-4 p-6 font-bold text-primary">
+          <span>{t.homeDeathTitle}</span>
+          <span class="transition-transform duration-500 group-open:rotate-180 text-primary" set:html={icons.expand_more} />
+        </summary>
+        <div class="px-6 pb-6 space-y-4 text-on-surface leading-relaxed zh-text-flow">
+          <p>{t.homeDeathP1}</p>
+          <p>{t.homeDeathP2}</p>
+          <a href={`${prefix}/services`} class="font-bold inline-block mt-2 text-secondary no-underline hover:underline">{t.homeDeathCta}</a>
+          <p class="flex flex-wrap gap-x-5 gap-y-2 pt-1">
+            {isZh ? (
+              <>
+                <a href={`${prefix}/blog/home-death-preparation-guide/`} class="font-semibold text-secondary no-underline hover:underline">在家離世完整準備指南 →</a>
+                <a href={`${prefix}/blog/discuss-amd-with-family/`} class="font-semibold text-secondary no-underline hover:underline">點樣同屋企人討論生死決定 →</a>
+              </>
+            ) : (
+              <>
+                <a href={`${prefix}/blog/home-death-preparation-guide/`} class="font-semibold text-secondary no-underline hover:underline">Complete guide to dying at home in Hong Kong →</a>
+                <a href={`${prefix}/blog/discuss-amd-with-family/`} class="font-semibold text-secondary no-underline hover:underline">How to discuss AMD with your family →</a>
+              </>
+            )}
+          </p>
+        </div>
+      </details>
+
+      <div class="flex flex-wrap gap-4 mt-10">
+        <a href={`${prefix}/amd-vs-dnacpr`} class={`bg-secondary text-white px-7 py-4 rounded-full font-bold text-lg no-underline hover:opacity-90 shadow-lg shadow-secondary/20 ${easeClass}`}>{t.honestCta1}</a>
+        <a href={`${prefix}/faq`} class={`bg-surface text-primary px-7 py-4 rounded-full font-bold text-lg no-underline hover:bg-white ${easeClass}`}>{t.honestCta2}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS — white numbered discs, terracotta numbers, connecting line -->
+  <section class="px-6 md:px-12 py-8 md:py-16 max-w-4xl mx-auto mb-16" data-reveal>
+    <div class="text-center mb-16">
+      <p class="text-secondary font-bold tracking-widest uppercase mb-4 text-sm">{t.processEyebrow}</p>
+      <h2 class="text-3xl md:text-5xl font-bold text-primary tracking-wide">{t.processTitle}</h2>
+    </div>
+    <div class="space-y-2">
+      {[
+        { title: t.processStep1Title, desc: t.processStep1Desc },
+        { title: t.processStep2Title, desc: t.processStep2Desc },
+        { title: t.processStep3Title, desc: t.processStep3Desc },
+      ].map((step, i) => (
+        <div class="step-line flex gap-6 md:gap-8 items-start pb-10" data-reveal-delay={i}>
+          <div class="w-14 h-14 md:w-16 md:h-16 shrink-0 rounded-3xl bg-white text-secondary flex items-center justify-center text-2xl font-bold z-10 shadow-lg border-2 border-surface">
+            {i + 1}
+          </div>
+          <div class="flex-1 pt-2">
+            <h4 class="text-xl md:text-2xl font-bold text-primary mb-3">{step.title}</h4>
+            <p class="text-on-surface-variant leading-relaxed zh-text-flow text-lg">{step.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+    <div class="text-center mt-4 space-y-2">
+      <div>
+        <a href={`${prefix}/blog/doctornow-home-amd-process/`} class="font-bold text-lg no-underline hover:underline text-secondary">{isZh ? '想知完整流程同收費？ →' : 'See the full signing process and fees →'}</a>
+      </div>
+      <div>
+        <a href={`${prefix}/how-it-works`} class="font-bold text-lg no-underline hover:underline text-secondary">{t.processCta}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- RELATED READING — below process, above footer -->
+  <section class="px-6 md:px-12 py-12 md:py-16 max-w-7xl mx-auto mb-8" data-reveal>
+    <div class="text-center mb-10">
+      <p class="text-secondary font-bold tracking-widest uppercase mb-4 text-sm">{isZh ? '延伸閱讀' : 'Learn more'}</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-primary tracking-wide">{isZh ? '相關閱讀' : 'Related reading'}</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {[
+        { href: `${prefix}/blog/amd-new-law-july31-changes-5-things/`, label: isZh ? '7.31 新法例有咩改動？5 件你要知嘅事' : 'AMD law changes from July 31: 5 things to know' },
+        { href: `${prefix}/blog/amd-new-law-part-a-vs-part-b/`, label: isZh ? '新法例 Part A vs Part B 點分？' : 'New AMD law: Part A vs Part B' },
+        { href: `${prefix}/blog/amd-old-form-grandfathering/`, label: isZh ? '舊版 AMD 表格仲有冇效？' : 'Is my old AMD form still valid?' },
+        { href: `${prefix}/blog/dementia-patients-amd/`, label: isZh ? '認知障礙症患者可以簽 AMD 嗎？' : 'Can dementia patients sign an AMD?' },
+      ].map((item) => (
+        <a href={item.href} class="lane-card group cursor-pointer flex items-center justify-between gap-4 no-underline">
+          <span class="font-bold text-primary text-lg leading-snug">{item.label}</span>
+          <span class="icon-wrapper text-xl text-secondary shrink-0 group-hover:translate-x-1 transition-transform" set:html={icons.arrow_forward} />
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>

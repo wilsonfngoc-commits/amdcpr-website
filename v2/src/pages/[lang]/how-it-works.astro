@@ -1,0 +1,233 @@
+---
+export async function getStaticPaths() {
+ return [
+ { params: { lang: 'zh' } },
+ { params: { lang: 'en' } },
+ ];
+}
+import Layout from '../../layouts/Layout.astro';
+import { waUrlShort } from '../../lib/site';
+import { icons } from '../../lib/icons';
+
+const lang = Astro.params.lang || 'zh';
+const isZh = lang === 'zh';
+const prefix = `/${lang}`;
+
+const pageTitle = isZh ? '預約流程' : 'How It Works';
+const pageDesc = isZh
+ ? '上門簽署預設醫療指示（AMD）嘅完整流程：WhatsApp 諮詢 → 醫生上門評估 → 即場簽署完成。全程約 30 分鐘。'
+ : 'The complete process for signing an Advance Medical Directive (AMD) at home: WhatsApp consultation → Doctor home assessment → On-site signing. Takes about 30 minutes.';
+const h1 = isZh ? '預約流程' : 'How It Works';
+const h1Sub = isZh
+ ? '上門簽署 AMD，簡單三步。我哋嘅流程清晰透明，每一步都有人幫你。'
+ : 'Signing an AMD at home is simple — three easy steps. Our process is clear and transparent, with support every step of the way.';
+
+const steps = isZh
+ ? [
+ {
+ num: '01',
+ title: 'WhatsApp 聯絡我哋',
+ desc: '點擊右下角 WhatsApp 按鈕或按下面嘅「立即預約」，即時同我哋對話。我哋嘅專員會親切了解你嘅需求，解答你嘅問題，並提供初步報價。',
+ detail: '我哋會問你幾個簡單問題：簽署人係邊個？方便上門嘅時間？係咪需要同時處理 EPA？然後幫你安排醫生檔期。',
+ icon: 'chat',
+ },
+ {
+ num: '02',
+ title: '醫生上門評估',
+ desc: '註冊西醫按時到達你屋企。喺你最熟悉嘅環境入面，醫生會同你詳細講解 AMD 嘅內容和法律效力，並進行精神狀態評估（Mental Capacity Assessment），確保你完全明白文件內容並且係自願簽署。',
+ detail: '呢個步驟係法律要求嘅重要部分。醫生會確認你神智清醒、理解文件、冇受壓力。全程態度友善，節奏由你話事。',
+ icon: 'stethoscope',
+ },
+ {
+ num: '03',
+ title: '簽署完成，交回家屬保管',
+ desc: '喺兩位見證人（包括醫生）面前簽署 AMD 文件。整個法律程序即場完成。正本會交俾你嘅家人妥善保管，副本留俾醫生記錄。',
+ detail: '簽署完成後，我哋會俾你一份清單，提醒你將 AMD 嘅存在告知家人、家庭醫生同醫院。全程約 30 分鐘。',
+ icon: 'edit_note',
+ },
+ ]
+ : [
+ {
+ num: '01',
+ title: 'Contact Us on WhatsApp',
+ desc: 'Click the WhatsApp button or the "Book Now" button below to start a conversation with us. Our team will warmly understand your needs, answer your questions, and provide an initial quote.',
+ detail: 'We\'ll ask a few simple questions: Who is the signatory? Preferred visiting time? Do you also need an EPA? Then we\'ll schedule a doctor\'s appointment.',
+ icon: 'chat',
+ },
+ {
+ num: '02',
+ title: 'Doctor Home Assessment',
+ desc: 'A registered doctor arrives at your home at the scheduled time. In your familiar home environment, the doctor explains the AMD\'s content and legal effect in detail, and conducts a Mental Capacity Assessment to ensure you fully understand the document and are signing voluntarily.',
+ detail: 'This step is a crucial legal requirement. The doctor confirms you are mentally competent, understand the document, and are under no pressure. The atmosphere is friendly and relaxed — you set the pace.',
+ icon: 'stethoscope',
+ },
+ {
+ num: '03',
+ title: 'Sign & Keep with Family',
+ desc: 'Sign the AMD document before two witnesses (including the doctor). The entire legal process is completed on the spot. The original is given to your family for safekeeping, with a copy retained for the doctor\'s records.',
+ detail: 'After signing, we provide a checklist reminding you to inform your family, family doctor, and hospital about the AMD. The entire process takes approximately 30 minutes.',
+ icon: 'edit_note',
+ },
+ ];
+
+const whyUsTitle = isZh ? '點解選擇老友宅醫？' : 'Why Choose DoctorNow?';
+const whyUsItems = isZh
+ ? [
+ { icon: 'verified', title: '註冊西醫團隊', desc: '所有醫生均為香港醫務委員會註冊西醫，經驗豐富。' },
+ { icon: 'home', title: '上門服務', desc: '唔使去診所或醫院，喺自己屋企簽妥文件。' },
+ { icon: 'timer', title: '30 分鐘完成', desc: '過程快捷，唔打擾你嘅日常生活。' },
+ { icon: 'groups', title: '10,000+ 次經驗', desc: '累積超過 10,000 次上門服務，值得信賴。' },
+ ]
+ : [
+ { icon: 'verified', title: 'Registered Doctors', desc: 'All doctors are MCHK-registered with extensive experience.' },
+ { icon: 'home', title: 'Home Visit', desc: 'No need to go to a clinic or hospital — sign in the comfort of your home.' },
+ { icon: 'timer', title: '30 Minutes', desc: 'Quick and efficient — minimal disruption to your day.' },
+ { icon: 'groups', title: '10,000+ Visits', desc: 'Over 10,000 home visits completed — a trusted service.' },
+ ];
+
+const prepTitle = isZh ? '準備清單' : 'What to prepare';
+const prepSub = isZh
+ ? '以下資料可協助醫生更快了解情況，令評估與簽署更順暢。'
+ : 'These items help the doctor assess faster and make signing smoother.';
+const prepItems = isZh
+ ? [
+ { icon: 'badge', title: '香港身份證（HKID）', desc: '簽署者的有效身份證明文件' },
+ { icon: 'clinical_notes', title: '病歷資料', desc: '主要病史、近期住院或覆診重點' },
+ { icon: 'medication', title: '藥物清單', desc: '現時服用藥物名稱與劑量' },
+ { icon: 'group', title: '家屬聯絡方式', desc: '可配合簽署安排的家人姓名及電話' },
+ ]
+ : [
+ { icon: 'badge', title: 'Hong Kong ID', desc: 'Valid identity document for the signatory' },
+ { icon: 'clinical_notes', title: 'Medical history', desc: 'Key diagnoses, recent admissions or follow-ups' },
+ { icon: 'medication', title: 'Medication list', desc: 'Current medicines and dosages' },
+ { icon: 'group', title: 'Family contacts', desc: 'Name and phone of family who can support the visit' },
+ ];
+
+const pricingTitle = isZh ? '透明收費' : 'Transparent pricing';
+const pricingTeasers = isZh
+ ? [
+ { name: 'AMD Basic', price: 'WhatsApp 報價', desc: '上門評估、AMD 講解、簽署及見證流程安排。' },
+ { name: 'AMD+EPA Combo', price: 'WhatsApp 報價', desc: '同次上門處理 AMD 及 EPA 相關醫療評估，節省安排時間。' },
+ { name: 'NGO Partnership', price: '合作查詢', desc: '適用機構協作或團體安排，按規模與需求提供透明方案。' },
+ ]
+ : [
+ { name: 'AMD Basic', price: 'WhatsApp quote', desc: 'Home assessment, AMD explanation, signing and witnessing.' },
+ { name: 'AMD+EPA Combo', price: 'WhatsApp quote', desc: 'Handle AMD and EPA medical assessment in one visit.' },
+ { name: 'NGO Partnership', price: 'Partnership inquiry', desc: 'Institutional or group arrangements tailored to scale.' },
+ ];
+
+const ctaTitle = isZh ? '準備好開始？' : 'Ready to get started?';
+const bookUrl = waUrlShort('AMD-S02', isZh ? 'zh' : 'en', isZh ? '我想預約上門簽署AMD' : 'I want to book a home visit for AMD signing');
+const ctaBtn = isZh ? 'WhatsApp 立即預約' : 'Book via WhatsApp Now';
+---
+
+<Layout title={pageTitle} description={pageDesc}>
+  <section class="pt-32 pb-20 px-6 md:px-12 bg-surface-container-low">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight text-primary">{h1}</h1>
+      <p class="text-lg md:text-xl text-on-surface-variant leading-relaxed max-w-3xl mx-auto">{h1Sub}</p>
+      <p class="mt-6 text-base md:text-lg">
+        <a href={`${prefix}/what-is-amd`} class="font-bold no-underline hover:underline text-secondary">
+          {isZh ? '未了解 AMD 係咩？先睇 AMD 完整指南 →' : 'Not sure what an AMD is? Read the full AMD guide →'}
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-5xl mx-auto space-y-12">
+      {steps.map((step) => (
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+          <div class="flex-shrink-0 flex flex-col items-center w-full md:w-24">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white bg-primary">
+              <span class="icon-wrapper text-3xl" set:html={icons[step.icon]} />
+            </div>
+            <span class="text-sm font-bold text-secondary mt-2">{step.num}</span>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-bold mb-4 text-2xl text-on-surface">{step.title}</h3>
+            <p class="leading-relaxed mb-4 text-lg text-on-surface">{step.desc}</p>
+            <div class="rounded-2xl p-5 bg-surface border border-outline-variant text-on-surface-variant">
+              <span class="font-semibold text-primary">{isZh ? '💡 小貼士：' : '💡 Tip: '}</span>
+              {step.detail}
+            </div>
+          </div>
+        </div>
+      ))}
+      <div class="flex gap-3 justify-center py-4">
+        {[0, 1, 2].map(() => (
+          <div class="w-3 h-3 rounded-full bg-primary" />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-4">{prepTitle}</h2>
+      <p class="leading-relaxed mb-10 text-lg text-on-surface-variant">{prepSub}</p>
+      <div class="space-y-4">
+        {prepItems.map((item) => (
+          <div class="border border-outline-variant rounded-2xl p-6 flex gap-4 items-start bg-surface">
+            <span class="icon-wrapper text-2xl text-primary shrink-0" set:html={icons[item.icon]} />
+            <div>
+              <h3 class="font-bold text-xl text-secondary mb-1">{item.title}</h3>
+              <p class="text-lg text-on-surface-variant">{item.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-primary">{pricingTitle}</h2>
+        <a href={`${prefix}/pricing`} class="font-bold hover:underline no-underline text-secondary">
+          {isZh ? '睇完整收費 →' : 'View full pricing →'}
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {pricingTeasers.map((pkg) => (
+          <div class="rounded-3xl p-8 bg-surface border border-outline-variant">
+            <h3 class="text-2xl font-bold text-primary mb-2">{pkg.name}</h3>
+            <p class="font-bold mb-4 text-2xl text-secondary">{pkg.price}</p>
+            <p class="leading-relaxed text-lg text-on-surface-variant">{pkg.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary text-center mb-12">{whyUsTitle}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {whyUsItems.map((item) => (
+          <div class="rounded-3xl p-8 bg-surface-container">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 bg-surface">
+              <span class="icon-wrapper text-2xl text-primary" set:html={icons[item.icon]} />
+            </div>
+            <h4 class="font-bold mb-3 text-lg text-on-surface">{item.title}</h4>
+            <p class="text-base text-on-surface-variant leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 text-white text-center bg-primary">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide mb-8">{ctaTitle}</h2>
+      <a
+        href={bookUrl}
+        target="_blank"
+        rel="noopener"
+        class="inline-block text-lg font-bold px-8 py-4 rounded-full no-underline hover:opacity-90 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] bg-secondary text-white"
+      >
+        {ctaBtn}
+      </a>
+    </div>
+  </section>
+</Layout>

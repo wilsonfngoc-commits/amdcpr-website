@@ -1,0 +1,273 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { ui } from '../../../lib/i18n';
+import { getPublishedPosts, getPostBySlug } from '../../../lib/strapi';
+import { marked } from 'marked';
+import fs from 'node:fs';
+
+export async function getStaticPaths() {
+ const posts = await getPublishedPosts();
+ const paths = [];
+ for (const post of posts) {
+ if (post.slug) {
+ paths.push({ params: { lang: 'zh', slug: post.slug } });
+ paths.push({ params: { lang: 'en', slug: post.slug } });
+ }
+ }
+ return paths;
+}
+
+const { lang, slug } = Astro.params;
+const t = ui(lang).global;
+const post = await getPostBySlug(slug || '');
+const isZh = lang === 'zh';
+
+/* Per-post OG image if public/blog/{slug}-og.png exists, else global */
+const postOgImage = fs.existsSync(`public/blog/${slug}-og.png`)
+  ? `https://dnacpr.hk/blog/${slug}-og.png`
+  : 'https://dnacpr.hk/og-image.png';
+
+/* Use English content when on EN page */
+const displayContent = isZh ? (post?.content || '') : (post?.content_en || post?.content || '');
+const displayTitle = isZh ? post?.title : (post?.title_en || post?.title);
+const displayExcerpt = isZh ? (post?.excerpt || '') : (post?.excerpt_en || post?.excerpt || '');
+
+/* Carousel content split */
+const splitHeading = isZh ? '### AMD 係咪代表放棄所有治療？' : '### Does an AMD mean giving up all treatment?';
+const contentParts = displayContent ? displayContent.split(splitHeading) : ['', ''];
+const beforeCarousel = contentParts[0] || '';
+const afterCarousel = contentParts.length > 1 && contentParts[1] ? splitHeading + contentParts[1] : '';
+const showCarousel = slug === 'amd-new-law-july31-changes-5-things';
+
+/* Rewrite any uncoded CMS wa.me links to carry [AMD-S03] (tracking completeness) */
+function codeWaLinks(html: string): string {
+  return html.replace(/https:\/\/wa\.me\/85263324599\?text=([^"')\s]+)/g, function (m, t) {
+    var decoded = '';
+    try { decoded = decodeURIComponent(t); } catch (e) { return m; }
+    if (decoded.indexOf('[AMD-S') === 0) return m;
+    return 'https://wa.me/85263324599?text=' + encodeURIComponent('[AMD-S03] ' + decoded);
+  });
+}
+
+
+/* Post-to-post related clusters (both langs link own-language posts) */
+const relatedClusters: string[][] = [
+  ['dnacpr-vs-amd-comparison', 'dnacpr-form-how-to-apply', 'no-intubation-dnacpr-vs-amd'],
+  ['amd-new-law-july31-changes-5-things', 'amd-new-law-part-a-vs-part-b', 'amd-old-form-grandfathering'],
+  ['home-death-preparation-guide', 'discuss-amd-with-family'],
+  ['acp-nireland', 'acp-singapore', 'acp-uk'],
+  ['what-is-acp', 'dementia-patients-amd'],
+  ['doctornow-home-amd-process', 'amd-new-law-part-a-vs-part-b'],
+];
+const cluster = relatedClusters.find((c) => c.includes(slug));
+const relatedPosts = (cluster || [])
+  .filter((s) => s !== slug)
+  .map((s) => getPostBySlug(s))
+  .filter((p): p is NonNullable<typeof p> => Boolean(p));
+
+/* Article JSON-LD structured data */
+const articleJsonLd = post ? {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  'headline': displayTitle,
+  'description': displayExcerpt,
+  'datePublished': post.created_at || '',
+  'dateModified': post.updated_at || post.created_at || '',
+  'author': { '@type': 'Person', 'name': 'Wilson (DoctorNow)' },
+  'publisher': {
+    '@type': 'Organization',
+    'name': 'DoctorNow',
+    'url': 'https://dnacpr.hk'
+  },
+  'url': `${Astro.site?.origin || 'https://dnacpr.hk'}/${lang}/blog/${slug}`,
+  'image': 'https://dnacpr.hk/og-image.png',
+  'inLanguage': isZh ? 'zh-HK' : 'en'
+} : null;
+---
+
+{post ? (
+  <Layout title={displayTitle} description={displayExcerpt || (isZh ? 'AMD 預設醫療指示相關文章' : 'AMD blog post')} ogImage={postOgImage}>
+    {articleJsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(articleJsonLd, null, 2)}>
+      </script>
+    )}
+    <main class="max-w-3xl mx-auto px-6 py-24 pt-32">
+      <a href={`/${lang}/blog`} class="inline-flex items-center gap-2 mb-8 font-medium text-primary no-underline hover:underline">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        {t.blogBack}
+      </a>
+      <article>
+        <h1 class="font-bold leading-[1.3] mb-6 text-4xl text-primary tracking-wide">{displayTitle}</h1>
+        {post.category && (
+          <span class="inline-block px-4 py-1 rounded-full text-sm font-medium mb-6 bg-surface-container text-on-surface-variant border border-outline-variant">{post.category}</span>
+        )}
+        <div class="prose prose-lg max-w-none text-on-surface
+          prose-headings:tracking-wide
+          prose-h2:text-primary prose-h2:text-3xl prose-h2:font-bold
+          prose-h3:text-on-surface prose-h3:text-xl prose-h3:font-semibold
+          prose-a:text-secondary prose-a:no-underline prose-a:font-semibold prose-a:hover:underline
+          prose-strong:text-primary
+          prose-p:leading-relaxed
+          prose-li:leading-relaxed
+          prose-hr:border-outline-variant
+        " set:html={beforeCarousel ? codeWaLinks(marked(beforeCarousel)) : ''}>
+        </div>
+        {showCarousel && (
+          <div class="amd-carousel-embed">
+            <div class="amd-carousel-track">
+              <div class="amd-card amd-card-1">
+                <div class="amd-card-head"><span class="amd-card-badge">1</span><span class="amd-card-title">{isZh ? '末期疾病' : 'Terminal Illness'}</span></div>
+                <div class="amd-card-body">
+                  <p class="amd-card-line">{isZh ? '尚餘幾日至幾星期命，死亡即將來臨' : 'Days to weeks left. Death is imminent.'}</p>
+                  <hr class="amd-card-hr" />
+                  <p class="amd-card-label">{isZh ? '實際例子' : 'Examples'}</p>
+                  <ul><li>{isZh ? '末期癌症擴散全身' : 'End-stage metastatic cancer'}</li><li>{isZh ? '多重器官衰竭' : 'Multiple organ failure'}</li><li>{isZh ? '末期心肺疾病' : 'End-stage heart/lung disease'}</li></ul>
+                  <hr class="amd-card-hr" />
+                  <p class="amd-card-label">{isZh ? '關鍵特徵' : 'Key Features'}</p>
+                  <ul><li>{isZh ? '醫生判斷「冇得醫」' : 'Incurable — doctor confirms'}</li><li>{isZh ? '死亡時程短（日-星期）' : 'Death timeline: days to weeks'}</li><li>{isZh ? '治療延長嘅係痛苦' : 'Treatment only prolongs suffering'}</li></ul>
+                </div>
+                <div class="amd-card-foot amd-foot-1">☠️ {isZh ? '死亡快將發生' : 'Death imminent'}</div>
+              </div>
+              <div class="amd-card amd-card-2">
+                <div class="amd-card-head"><span class="amd-card-badge">2</span><span class="amd-card-title">{isZh ? '持續植物人狀況' : 'Persistent Vegetative State'}</span></div>
+                <div class="amd-card-body">
+                  <p class="amd-card-line">{isZh ? '失去意識，冇恢復可能。身體仲喺度，但意識已冇' : 'No awareness. No recovery. Body lives, but consciousness is gone.'}</p>
+                  <hr class="amd-card-hr" />
+                  <p class="amd-card-label">{isZh ? '實際例子' : 'Examples'}</p>
+                  <ul><li>{isZh ? '腦部嚴重創傷' : 'Severe brain trauma'}</li><li>{isZh ? '中風後昏迷超過6個月' : 'Coma >6 months after stroke'}</li></ul>
+                  <hr class="amd-card-hr" />
+                  <p class="amd-card-label">{isZh ? '關鍵特徵' : 'Key Features'}</p>
+                  <ul><li>{isZh ? '對外界冇反應' : 'No response to environment'}</li><li>{isZh ? '有瞓醒周期但冇意識' : 'Sleep-wake cycles but no consciousness'}</li><li>{isZh ? '自己唔會醒返' : 'Will not regain awareness'}</li></ul>
+                </div>
+                <div class="amd-card-foot amd-foot-2">🧠 {isZh ? '意識永不恢復' : 'Never regain consciousness'}</div>
+              </div>
+              <div class="amd-card amd-card-3">
+                <div class="amd-card-head"><span class="amd-card-badge">3</span><span class="amd-card-title">{isZh ? <>晚期不可逆轉<br />生存受限疾病</> : <>Advanced Irreversible<br />Life-limiting Disease</>}</span></div>
+                <div class="amd-card-body">
+                  <p class="amd-card-line">{isZh ? '病情冇得逆轉，但唔係即刻會走' : 'Irreversible decline, but death is not immediate.'}</p>
+                  <hr class="amd-card-hr" />
+                  <p class="amd-card-label">{isZh ? '實際例子' : 'Examples'}</p>
+                  <ul><li>{isZh ? '晚期認知障礙症' : 'Advanced dementia'}</li><li>{isZh ? '末期腎衰竭（唔洗腎）' : 'End-stage renal failure (no dialysis)'}</li><li>{isZh ? '嚴重慢性阻塞肺病' : 'Severe COPD'}</li></ul>
+                  <hr class="amd-card-hr" />
+                  <p class="amd-card-label">{isZh ? '關鍵特徵' : 'Key Features'}</p>
+                  <ul><li>{isZh ? '病情慢慢惡化' : 'Gradual deterioration'}</li><li>{isZh ? '生存但生活質素極差' : 'Survival with poor quality of life'}</li><li>{isZh ? '時限係月-年，唔係日' : 'Timeline: months to years'}</li></ul>
+                </div>
+                <div class="amd-card-foot amd-foot-3">⏳ {isZh ? '持續但生存受限' : 'Ongoing but limited'}</div>
+              </div>
+            </div>
+            <div class="amd-carousel-hint">{isZh ? '← 向左滑動查看更多 →' : '← Swipe left for more →'}</div>
+          </div>
+        )}
+        {afterCarousel && (
+        <div class="prose prose-lg max-w-none text-on-surface
+          prose-headings:tracking-wide
+          prose-h2:text-primary prose-h2:text-3xl prose-h2:font-bold
+          prose-h3:text-on-surface prose-h3:text-xl prose-h3:font-semibold
+          prose-a:text-secondary prose-a:no-underline prose-a:font-semibold prose-a:hover:underline
+          prose-strong:text-primary
+          prose-p:leading-relaxed
+          prose-li:leading-relaxed
+          prose-hr:border-outline-variant
+        " set:html={codeWaLinks(marked(afterCarousel))}>
+        </div>
+        )}
+        <style>
+          .amd-carousel-embed {
+            margin: 1.5rem -1.5rem; padding: 0 1.5rem;
+            overflow-x: auto; -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+          }
+          .amd-carousel-embed::-webkit-scrollbar { display: none; }
+          .amd-carousel-track { display: flex; gap: 1rem; }
+          .amd-card {
+            flex: 0 0 280px; scroll-snap-align: start;
+            border-radius: 12px; padding: 1.25rem;
+            border: 1.5px solid;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            font-size: 14px; line-height: 1.5;
+          }
+          @media (min-width: 768px) {
+            .amd-carousel-embed { overflow-x: visible; margin: 1.5rem 0; padding: 0; }
+            .amd-carousel-track { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+            .amd-card { flex: unset; }
+            .amd-carousel-hint { display: none; }
+          }
+          .amd-card-1 { background: #fef2f2; border-color: #fca5a5; }
+          .amd-card-2 { background: #f0f9ff; border-color: #93c5fd; }
+          .amd-card-3 { background: #fff7ed; border-color: #fdba74; }
+          .amd-card-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+          .amd-card-badge {
+            width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+          }
+          .amd-card-1 .amd-card-badge { background: #dc2626; }
+          .amd-card-2 .amd-card-badge { background: #2563eb; }
+          .amd-card-3 .amd-card-badge { background: #ea580c; }
+          .amd-card-title { margin: 0; font-size: 16px; font-weight: 700; }
+          .amd-card-1 .amd-card-title { color: #dc2626; }
+          .amd-card-2 .amd-card-title { color: #2563eb; }
+          .amd-card-3 .amd-card-title { color: #ea580c; }
+          .amd-card-line { font-size: 13px; margin: 0 0 0.25rem; color: #475569; }
+          .amd-card-hr { height: 1px; background: currentColor; opacity: 0.15; margin: 0.6rem 0; border: none; }
+          .amd-card-label { font-weight: 700; font-size: 12px; margin: 0 0 0.25rem; }
+          .amd-card-1 .amd-card-label { color: #991b1b; }
+          .amd-card-2 .amd-card-label { color: #1e40af; }
+          .amd-card-3 .amd-card-label { color: #9a3412; }
+          .amd-card-body ul { margin: 0; padding-left: 1.2rem; font-size: 12px; color: #334155; }
+          .amd-card-body ul li { margin-bottom: 0.25rem; }
+          .amd-card-foot {
+            margin-top: 0.5rem; padding: 0.4rem; border-radius: 6px;
+            text-align: center; font-size: 12px; font-weight: 700; color: #fff;
+          }
+          .amd-foot-1 { background: #dc2626; }
+          .amd-foot-2 { background: #2563eb; }
+          .amd-foot-3 { background: #ea580c; }
+          .amd-carousel-hint { text-align: center; font-size: 12px; color: #94a3b8; margin-top: 0.5rem; }
+          /* Remove bullet markers from checklists (they already have checkboxes) */
+          .prose ul:has(li input[type="checkbox"]) {
+            list-style-type: none;
+            padding-left: 0;
+          }
+        </style>
+      </article>
+      {relatedPosts.length > 0 && (
+        <div class="mt-12 border-t border-outline-variant pt-8">
+          <h2 class="text-xl font-bold text-primary mb-4">{isZh ? '相關文章' : 'Related articles'}</h2>
+          <ul class="space-y-3">
+            {relatedPosts.map((p) => (
+              <li>
+                <a href={`/${lang}/blog/${p.slug}/`} class="font-semibold text-secondary no-underline hover:underline">
+                  {isZh ? p.title : (p.title_en || p.title)}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {/* Service-page cross-link: feeds /{lang}/services/ inbound links via indexed blog posts
+          and gives orphan posts (e.g. dementia-patients-amd) an outbound reference.
+          Target slugs verified indexed via GSC on 2026-09-07. [part-A link audit] */}
+      {['dnacpr-form-how-to-apply','amd-new-law-part-a-vs-part-b','amd-old-form-grandfathering','dementia-patients-amd'].includes(slug || '') && (
+        <div class="mt-8 border-t border-outline-variant pt-8">
+          <h2 class="text-xl font-bold text-primary mb-4">{isZh ? '了解我們的服務' : 'See our services'}</h2>
+          <p class="text-on-surface-variant mb-4">
+            {isZh
+              ? '想了解上門簽署 AMD 的服務流程、包含項目與費用？'
+              : 'Want to know what our home AMD signing service includes — the visit, the process, and the pricing?'}
+          </p>
+          <a href={`/${lang}/services/`} class="inline-flex items-center gap-2 font-semibold text-secondary no-underline hover:underline">
+            {isZh ? '查看完整服務詳情 →' : 'See our full service details →'}
+          </a>
+        </div>
+      )}
+    </main>
+  </Layout>
+) : (
+  <Layout title={isZh ? '文章未找到' : 'Post Not Found'}>
+    <main class="max-w-4xl mx-auto px-6 py-24 pt-32 text-center">
+      <h1 class="text-3xl font-bold mb-4 text-primary">{isZh ? '文章未找到' : 'Post Not Found'}</h1>
+      <a href={`/${lang}/blog`} class="font-bold text-secondary no-underline hover:underline">{t.blogBack}</a>
+    </main>
+  </Layout>
+)}

@@ -1,0 +1,19 @@
+# DoctorNow AMD & No-CPR
+> 香港在宅醫療新知 — AMD(Advance Medical Directives)與不作心肺復甦(DNACPR)的公眾教育平台。
+
+## Pages
+- [主頁](https://dnacpr.hk/zh/):病人自主、預設醫療指示、在宅離世
+- [AMD 完整指南](https://dnacpr.hk/zh/what-is-amd/):香港 AMD 法例、申請流程與表格須知
+- [常見問題](https://dnacpr.hk/zh/faq/):CPR 執行、簽署流程、AMD 生效與有效期
+- [聯絡/查詢](https://dnacpr.hk/zh/contact/):WhatsApp 852-6332-4599
+
+## 重要資訊
+- 在香港,AMD 屬病人自主決定,需見證人簽署
+- DNACPR(不作心肺復甦)≠ 安樂死,是合法醫療指示
+- 本平台非診所,只提供公眾教育與資訊整合
+
+## 最後更新
+- 2026-09-03
+
+## Sitemap
+- https://dnacpr.hk/sitemap-index.xml

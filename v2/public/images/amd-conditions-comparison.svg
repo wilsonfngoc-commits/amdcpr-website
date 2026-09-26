@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-label="AMD三種指定情況比較圖">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </linearGradient>
+    <linearGradient id="terminal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef2f2"/>
+      <stop offset="100%" stop-color="#fee2e2"/>
+    </linearGradient>
+    <linearGradient id="vegetative" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0f9ff"/>
+      <stop offset="100%" stop-color="#e0f2fe"/>
+    </linearGradient>
+    <linearGradient id="limiting" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff7ed"/>
+      <stop offset="100%" stop-color="#ffedd5"/>
+    </linearGradient>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="106%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="480" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="38" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="18" font-weight="700" fill="#1e293b">AMD 三種適用情況 — 簡單比較</text>
+  <line x1="200" y1="50" x2="600" y2="50" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- === Card 1: 末期疾病 === -->
+  <rect x="25" y="68" width="240" height="380" rx="10" fill="url(#terminal)" filter="url(#shadow)" stroke="#fca5a5" stroke-width="1.5"/>
+  <circle cx="145" cy="98" r="16" fill="#dc2626"/>
+  <text x="145" y="103" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="white">1</text>
+  <text x="145" y="130" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="15" font-weight="700" fill="#dc2626">末期疾病</text>
+
+  <text x="145" y="158" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" fill="#7f1d1d">
+    <tspan x="145" dy="0">尚餘幾日至幾星期命</tspan>
+    <tspan x="145" dy="18">死亡即將來臨</tspan>
+  </text>
+
+  <line x1="45" y1="180" x2="245" y2="180" stroke="#fecaca" stroke-width="1"/>
+
+  <text x="45" y="200" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" font-weight="700" fill="#991b1b">實際例子</text>
+  <text x="45" y="218" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="10.5" fill="#450a0a">
+    <tspan x="45" dy="0">• 末期癌症擴散全身</tspan>
+    <tspan x="45" dy="16">• 多重器官衰竭</tspan>
+    <tspan x="45" dy="16">• 末期心肺疾病</tspan>
+  </text>
+
+  <line x1="45" y1="268" x2="245" y2="268" stroke="#fecaca" stroke-width="1"/>
+
+  <text x="45" y="286" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" font-weight="700" fill="#991b1b">關鍵特徵</text>
+  <text x="45" y="304" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="10.5" fill="#450a0a">
+    <tspan x="45" dy="0">• 醫生判斷「冇得醫」</tspan>
+    <tspan x="45" dy="16">• 死亡時程短（日-星期）</tspan>
+    <tspan x="45" dy="16">• 治療延長嘅係痛苦</tspan>
+  </text>
+
+  <line x1="45" y1="356" x2="245" y2="356" stroke="#fecaca" stroke-width="1"/>
+
+  <rect x="55" y="368" width="180" height="30" rx="6" fill="#dc2626" opacity="0.9"/>
+  <text x="145" y="388" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" font-weight="700" fill="white">☠️ 死亡快將發生</text>
+
+  <!-- === Card 2: 植物人 === -->
+  <rect x="280" y="68" width="240" height="380" rx="10" fill="url(#vegetative)" filter="url(#shadow)" stroke="#93c5fd" stroke-width="1.5"/>
+  <circle cx="400" cy="98" r="16" fill="#2563eb"/>
+  <text x="400" y="103" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="white">2</text>
+  <text x="400" y="130" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="15" font-weight="700" fill="#2563eb">持續植物人狀況</text>
+
+  <text x="400" y="158" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" fill="#1e3a5f">
+    <tspan x="400" dy="0">失去意識，冇恢復可能</tspan>
+    <tspan x="400" dy="18">身體仲喺度，但意識已冇</tspan>
+  </text>
+
+  <line x1="300" y1="180" x2="500" y2="180" stroke="#bfdbfe" stroke-width="1"/>
+
+  <text x="300" y="200" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" font-weight="700" fill="#1e40af">實際例子</text>
+  <text x="300" y="218" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="10.5" fill="#0f172a">
+    <tspan x="300" dy="0">• 腦部嚴重創傷</tspan>
+    <tspan x="300" dy="16">• 中風後昏迷超過6個月</tspan>
+  </text>
+
+  <line x1="300" y1="256" x2="500" y2="256" stroke="#bfdbfe" stroke-width="1"/>
+
+  <text x="300" y="274" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" font-weight="700" fill="#1e40af">關鍵特徵</text>
+  <text x="300" y="292" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="10.5" fill="#0f172a">
+    <tspan x="300" dy="0">• 對外界冇反應</tspan>
+    <tspan x="300" dy="16">• 有瞓醒周期但唔意識</tspan>
+    <tspan x="300" dy="16">• 自己唔會醒返</tspan>
+  </text>
+
+  <line x1="300" y1="344" x2="500" y2="344" stroke="#bfdbfe" stroke-width="1"/>
+
+  <rect x="310" y="356" width="180" height="30" rx="6" fill="#2563eb" opacity="0.9"/>
+  <text x="400" y="376" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" font-weight="700" fill="white">🧠 意識永不恢復</text>
+
+  <!-- === Card 3: 晚期不可逆轉 === -->
+  <rect x="535" y="68" width="240" height="380" rx="10" fill="url(#limiting)" filter="url(#shadow)" stroke="#fdba74" stroke-width="1.5"/>
+  <circle cx="655" cy="98" r="16" fill="#ea580c"/>
+  <text x="655" y="103" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="700" fill="white">3</text>
+  <text x="655" y="130" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="14" font-weight="700" fill="#ea580c">晚期不可逆轉</text>
+  <text x="655" y="148" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="12" font-weight="600" fill="#c2410c">生存受限疾病</text>
+
+  <text x="655" y="170" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" fill="#431407">
+    <tspan x="655" dy="0">病情冇得逆轉</tspan>
+    <tspan x="655" dy="18">但唔係即刻會走</tspan>
+  </text>
+
+  <line x1="555" y1="192" x2="755" y2="192" stroke="#fed7aa" stroke-width="1"/>
+
+  <text x="555" y="210" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" font-weight="700" fill="#9a3412">實際例子</text>
+  <text x="555" y="228" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="10.5" fill="#431407">
+    <tspan x="555" dy="0">• 晚期認知障礙症</tspan>
+    <tspan x="555" dy="16">• 末期腎衰竭（唔洗腎）</tspan>
+    <tspan x="555" dy="16">• 嚴重慢性阻塞肺病</tspan>
+  </text>
+
+  <line x1="555" y1="278" x2="755" y2="278" stroke="#fed7aa" stroke-width="1"/>
+
+  <text x="555" y="296" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" font-weight="700" fill="#9a3412">關鍵特徵</text>
+  <text x="555" y="314" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="10.5" fill="#431407">
+    <tspan x="555" dy="0">• 病情慢慢惡化</tspan>
+    <tspan x="555" dy="16">• 生存但生活質素極差</tspan>
+    <tspan x="555" dy="16">• 時限係月-年，唔係日</tspan>
+  </text>
+
+  <line x1="555" y1="366" x2="755" y2="366" stroke="#fed7aa" stroke-width="1"/>
+
+  <rect x="565" y="378" width="180" height="30" rx="6" fill="#ea580c" opacity="0.9"/>
+  <text x="655" y="398" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="11" font-weight="700" fill="white">⏳ 持續但生存受限</text>
+
+  <!-- Footer note -->
+  <rect x="0" y="460" width="800" height="20" rx="0" fill="#f1f5f9"/>
+  <text x="400" y="474" text-anchor="middle" font-family="'Noto Sans TC','Microsoft JhengHei','PingFang TC',sans-serif" font-size="10" fill="#94a3b8">簡單版：1 = 就快走 · 2 = 醒唔返 · 3 = 冇得好返但要挨</text>
+</svg>

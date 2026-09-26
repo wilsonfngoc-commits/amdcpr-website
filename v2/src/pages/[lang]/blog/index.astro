@@ -1,0 +1,61 @@
+---
+export async function getStaticPaths() {
+ return [
+ { params: { lang: 'zh' } },
+ { params: { lang: 'en' } },
+ ];
+}
+
+import Layout from '../../../layouts/Layout.astro';
+import { ui } from '../../../lib/i18n';
+import { getPublishedPosts } from '../../../lib/strapi';
+
+const { lang } = Astro.params;
+const isZh = lang === 'zh';
+const t = ui(lang).global;
+const prefix = `/${lang}`;
+const posts = await getPublishedPosts();
+---
+
+<Layout
+  title={t.blogTitle}
+  description={t.blogDesc}
+>
+  <main class="max-w-4xl mx-auto px-6 py-24 pt-32">
+    <h1 class="text-4xl font-bold tracking-wide text-primary mb-4">{t.blog}</h1>
+    <p class="text-lg text-on-surface-variant mb-12">{t.blogDesc}</p>
+
+    <div class="rounded-3xl p-8 bg-surface-container border border-outline-variant mb-12">
+      <h2 class="text-2xl font-bold mb-3 text-primary">{isZh ? '預設醫療指示（AMD）是什麼？' : 'What is an Advance Medical Directive (AMD)?'}</h2>
+      <p class="text-on-surface-variant mb-4 leading-relaxed">
+        {isZh
+          ? '未睇過 AMD 入門？一文睇哂 AMD 嘅定義、法律效力、訂立資格、簽署流程及常見問題。'
+          : 'New to advance care planning? Read our complete guide to what an AMD is, its legal effect, eligibility, the signing process and FAQs.'}
+      </p>
+      <a href={`/${lang}/what-is-amd`} class="font-bold no-underline hover:underline text-secondary">
+        {isZh ? '睇完整 AMD 指南 →' : 'Read the full AMD guide →'}
+      </a>
+    </div>
+
+    {posts.length === 0 && (
+      <p class="py-16 text-center text-on-surface-variant">{t.blogNoPosts}</p>
+    )}
+
+    <div class="space-y-8">
+      {posts.map((post) => (
+        <article class="rounded-3xl overflow-hidden bg-surface-container border border-outline-variant transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:opacity-95">
+          <a href={`/${lang}/blog/${post.slug}`} class="block p-8 no-underline">
+            <h2 class="text-2xl font-bold mb-2 text-primary">{isZh ? post.title : (post.title_en || post.title)}</h2>
+            {isZh ? post.excerpt : (post.excerpt_en || post.excerpt) && (
+              <p class="text-on-surface-variant mb-4 leading-relaxed">{isZh ? post.excerpt : (post.excerpt_en || post.excerpt)}</p>
+            )}
+            <span class="font-semibold inline-flex items-center gap-2 text-secondary">
+              {t.blogReadMore}
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </a>
+        </article>
+      ))}
+    </div>
+  </main>
+</Layout>

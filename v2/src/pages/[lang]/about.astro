@@ -1,0 +1,138 @@
+---
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'zh' } },
+    { params: { lang: 'en' } },
+  ];
+}
+import Layout from '../../layouts/Layout.astro';
+import { waUrlShort } from '../../lib/site';
+import { icons } from '../../lib/icons';
+
+const lang = Astro.params.lang || 'zh';
+const isZh = lang === 'zh';
+
+const pageTitle = isZh ? '關於我們' : 'About Us';
+const pageDesc = isZh
+  ? '關於老友宅醫 DoctorNow AMD 團隊——香港領先嘅上門 AMD 簽署服務。'
+  : 'About the DoctorNow AMD team — Hong Kong\'s leading home-visit AMD signing service.';
+const h1 = isZh ? '關於老友宅醫 DoctorNow AMD' : 'About DoctorNow AMD';
+const h1Sub = isZh
+  ? '我哋係 DoctorNow Home（老友宅醫）旗下嘅專項 AMD 服務團隊，致力為香港家庭提供尊嚴、安心、專業嘅臨終醫療規劃。'
+  : 'We are the dedicated AMD service team under DoctorNow Home, committed to providing dignified, reassuring, and professional end-of-life medical planning for Hong Kong families.';
+
+const storyTitle = isZh ? '我哋嘅故事' : 'Our Story';
+const storyP1 = isZh
+  ? '老友宅醫（DoctorNow Home）係香港其中一間最具規模嘅上門醫療服務機構。我哋累積超過 10,000 次上門服務，服務範圍覆蓋香港島、九龍、新界及指定離島。'
+  : 'DoctorNow Home is one of Hong Kong\'s largest home-visit medical service providers. We have completed over 10,000 home visits, covering Hong Kong Island, Kowloon, the New Territories, and selected outlying islands.';
+const storyP2 = isZh
+  ? '隨住《維持生命治療的預作決定條例》（Cap. 651）嘅立法完善，我哋觀察到越來越多人希望了解 AMD，但因流程複雜、唔知點入手而卻步。於是，我哋推出咗專注嘅 AMD 上門簽署服務——由我哋嘅醫生團隊直接上門，一站式完成所有程序，唔使長者同家屬奔波。'
+  : 'With the legislative improvements to the Advance Decision on Life-sustaining Treatment Ordinance (Cap. 651), we observed increasing interest in AMD — but many were deterred by the complex process. So we launched a dedicated AMD home-visit signing service: our doctor team goes directly to your home, completing all procedures in one go, so seniors and families don\'t have to travel.';
+const storyP3 = isZh
+  ? '我哋嘅目標好簡單：讓每個人都可以有尊嚴地為自己嘅醫療選擇做主，喺最熟悉嘅環境——自己屋企——完成呢份重要嘅文件。'
+  : 'Our goal is simple: enable everyone to make their own medical choices with dignity, and complete this important document in the most familiar environment — their own home.';
+
+const teamTitle = isZh ? '團隊特色' : 'Team Highlights';
+const teamItems = isZh
+  ? [
+      { icon: 'verified', title: '註冊西醫團隊', desc: '所有醫生均為香港醫務委員會註冊西醫，具備豐富嘅社區醫療經驗。' },
+      { icon: 'home', title: '上門服務', desc: '我哋深信，最好嘅醫療規劃應該喺最安心嘅地方進行——你嘅屋企。' },
+      { icon: 'translate', title: '雙語服務', desc: '廣東話、普通話、英文皆可，照顧不同背景嘅家庭需要。' },
+      { icon: 'diversity_3', title: '社區連結', desc: '與多間社福機構、長者中心長期合作，定期舉辦免費講座。' },
+    ]
+  : [
+      { icon: 'verified', title: 'Registered Doctors', desc: 'All doctors are MCHK-registered with extensive community medical experience.' },
+      { icon: 'home', title: 'Home Visits', desc: 'We believe the best medical planning happens in the most comfortable place — your home.' },
+      { icon: 'translate', title: 'Bilingual Service', desc: 'Cantonese, Mandarin, and English — serving families from all backgrounds.' },
+      { icon: 'diversity_3', title: 'Community Ties', desc: 'Long-term partnerships with NGOs and elderly centres, regularly hosting free workshops.' },
+    ];
+
+const parentTitle = isZh ? '關於 DoctorNow Home（老友宅醫）' : 'About DoctorNow Home';
+const parentP1 = isZh
+  ? 'DoctorNow Home（老友宅醫）係香港領先嘅上門醫療服務平台。我哋嘅使命係將醫療服務帶到病人嘅屋企，減少長者同行動不便人士往返醫院嘅負擔。'
+  : 'DoctorNow Home is Hong Kong\'s leading home-visit medical service platform. Our mission is to bring medical services to patients\' homes, reducing the burden of hospital travel for the elderly and those with limited mobility.';
+const parentP2 = isZh
+  ? '服務範圍包括：普通科及專科上門診症、上門疫苗接種、上門健康檢查、在家離世善終服務，以及我哋嘅專項 AMD 簽署服務。'
+  : 'Services include: general and specialist home consultations, home vaccination, home health check-ups, home death end-of-life care, and our dedicated AMD signing service.';
+const parentCta = isZh ? '了解 DoctorNow Home →' : 'Learn about DoctorNow Home →';
+
+const ctaTitle = isZh ? '同我哋傾下？' : 'Want to talk?';
+const ctaDesc = isZh
+  ? 'WhatsApp 我哋，完全冇壓力，純粹了解都得。'
+  : 'WhatsApp us — no pressure, even if you\'re just exploring.';
+const waUrl = waUrlShort(
+  'AMD-S10',
+  isZh ? 'zh' : 'en',
+  isZh ? '我想了解老友宅醫AMD服務' : 'I want to learn about DoctorNow AMD services'
+);
+---
+
+<Layout title={pageTitle} description={pageDesc}>
+  <section class="pt-32 pb-20 px-6 md:px-12 bg-surface">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight text-primary">{h1}</h1>
+      <p class="text-lg md:text-xl text-on-surface-variant leading-relaxed max-w-3xl mx-auto">{h1Sub}</p>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary text-center mb-12">{storyTitle}</h2>
+      <div class="space-y-6 text-lg text-on-surface leading-relaxed">
+        <p>{storyP1}</p>
+        <p>{storyP2}</p>
+        <p class="font-medium text-primary">{storyP3}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary text-center mb-12">{teamTitle}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {teamItems.map((item) => (
+          <div class="rounded-3xl p-8 bg-surface-container">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 bg-surface">
+              <span class="icon-wrapper text-2xl text-primary" set:html={icons[item.icon]} />
+            </div>
+            <h4 class="font-bold mb-3 text-lg text-on-surface">{item.title}</h4>
+            <p class="text-base text-on-surface-variant leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-4xl mx-auto">
+      <div class="rounded-3xl p-10 md:p-12 bg-surface-container">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-8">{parentTitle}</h2>
+        <div class="space-y-4 text-lg text-on-surface leading-relaxed">
+          <p>{parentP1}</p>
+          <p>{parentP2}</p>
+        </div>
+        <a
+          href={`/${lang}/services`}
+          class="inline-block mt-8 text-lg font-bold text-white px-8 py-4 rounded-full no-underline hover:opacity-90 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] bg-primary"
+        >
+          {parentCta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 text-white text-center bg-primary">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide mb-4">{ctaTitle}</h2>
+      <p class="text-lg mb-8 text-white/80">{ctaDesc}</p>
+      <a
+        href={waUrl}
+        target="_blank"
+        rel="noopener"
+        class="inline-block text-lg font-bold px-8 py-4 rounded-full no-underline hover:opacity-90 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] bg-secondary text-white"
+      >
+        WhatsApp {isZh ? '傾下偈' : 'Chat with Us'}
+      </a>
+    </div>
+  </section>
+</Layout>

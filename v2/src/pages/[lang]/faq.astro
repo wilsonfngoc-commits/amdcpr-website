@@ -1,0 +1,254 @@
+---
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'zh' } },
+    { params: { lang: 'en' } },
+  ];
+}
+import Layout from '../../layouts/Layout.astro';
+import { waUrlShort } from '../../lib/site';
+
+const lang = Astro.params.lang || 'zh';
+const isZh = lang === 'zh';
+
+const pageTitle = isZh ? '常見問題' : 'FAQ';
+const pageDesc = isZh
+  ? '關於預設醫療指示（AMD）的常見問題：在家被發現、更改意願、費用、有效期、DNACPR 區別等。'
+  : 'Frequently asked questions about Advance Medical Directives (AMD): being found at home, changing your mind, costs, validity, DNACPR differences, and more.';
+const h1 = isZh ? '常見問題' : 'Frequently Asked Questions';
+const h1Sub = isZh
+  ? '以下是我們最常收到的問題。如果你有其他疑問，歡迎 WhatsApp 直接問我哋。'
+  : 'Here are the questions we receive most often. If you have other queries, feel free to WhatsApp us directly.';
+
+const waUrl = waUrlShort(
+  'AMD-S06',
+  isZh ? 'zh' : 'en',
+  isZh ? '我有關於預設醫療指示的問題' : 'I have a question about Advance Medical Directives'
+);
+
+const faqList = isZh
+  ? [
+      {
+        q: '如果我喺屋企突然暈咗冇心跳，救護員係咪會照樣幫我做 CPR？會唔會因為我有 AMD 而唔做？',
+        a: '救護員會照樣幫你做 CPR。條例訂明「如有疑問，救人第一」——救護員無須搜查你嘅個人物品去確認有冇 AMD，亦冇辦法喺現場判斷你係咪符合 AMD 嘅三個指定情況（末期疾病、植物人狀態等）。要令救護員唔做 CPR，你需要一份 DNACPR 文件。醫管局為 DNACPR 病人提供黃色標準文件袋，建議放喺顯眼位置，授權救護人員搜尋袋內文件。我哋建議同時準備 AMD 和 DNACPR。',
+      },
+      {
+        q: '我簽咗 AMD 之後可以改變主意嗎？',
+        a: '可以，但必須喺你仍有精神能力嘅時候撤銷。條例訂明五種法定撤銷方式：① 書面撤銷（紙本或電子）② 簽署標準表格第 5 部 ③ 燒毀、撕毀或劃掉文件並每頁簽署 ④ 喺至少一名成年見證人在場下口頭或非語言表達（如點頭、搖頭、手語）⑤ 透過醫健通電子撤銷（功能啟用後）。注意：後期認知障礙症病人「現時不同意」唔等於有效口頭撤銷，醫護仍會遵循原 AMD。',
+      },
+      {
+        q: '簽署 AMD 需要幾耐？過程係點？',
+        a: '醫生上門後，整個流程約 30 分鐘。過程包括：醫生先同你傾談，確認你神智清醒、自願簽署（Mental Capacity Assessment）；然後由你喺兩位見證人面前簽署 AMD 文件；最後正本交俾家人保管。整個過程喺你屋企完成，唔需要去醫院或律師樓。',
+      },
+      {
+        q: 'AMD 係咪好貴？',
+        a: '我哋提供合理嘅收費，上門簽署服務由註冊西醫主理，包見證人安排。由於每位客戶嘅情況唔同（例如是否同時需要 EPA、是否偏遠地區等），實際收費請 WhatsApp 查詢。我哋收費透明，絕無隱藏費用。',
+      },
+      {
+        q: 'AMD 同 DNACPR 有咩分別？我係咪兩樣都要？',
+        a: 'AMD 係你（病人）自己簽嘅法律文件，表達你對醫療治療嘅意願，持續有效直至撤銷或離世。DNACPR 係由兩名註冊醫生（其中一位須為專科醫生）簽發嘅臨床醫囑，指示醫療人員唔進行 CPR；DNACPR 有效期不多於一年，須由醫生續期；DNACPR 不設電子版，僅正本或醫生/律師核實副本有效。理想情況下，兩樣都有係最全面嘅保護——AMD 保障你喺醫院嘅治療意願，DNACPR 確保救護員到場時知道唔做 CPR。',
+      },
+      {
+        q: '簽 AMD 需要律師嗎？',
+        a: '唔需要。AMD 嘅法律要求係：簽署人神智清醒、自願、書面形式、並有兩位見證人（其中一位須為註冊醫生，另一位不可為遺產受益人）。唔需要律師在場。我哋嘅醫生團隊會準備好所有文件同見證人安排。',
+      },
+      {
+        q: '如果我冇屋企人，可以簽 AMD 嗎？',
+        a: '可以。你只需要兩位見證人（其中一位係醫生）就可以簽署 AMD。簽完之後，你可以將正本交俾信任嘅朋友、社工或保管人。我哋會提供正本保存嘅建議。',
+      },
+      {
+        q: '我想在家離世，係咪一定要有 AMD 或 DNACPR？',
+        a: '如果你選擇在家離世，一般唔需要 AMD 或 DNACPR。在家離世嘅關鍵係有一位願意上門嘅醫生，喺病人離世後簽發《死因證明書》，咁就唔需要叫救護車或去急症室。另外，2024 年 6 月 3 日起，院舍離世如符合三項條件（①死前診斷末期疾病 ②離世前 14 日內獲註冊醫生診治 ③死因證明書註明自然原因），則不需呈報死因裁判法庭。我哋 DoctorNow Home 提供全面嘅在家離世方案，包括醫生上門、善終護理同身後事安排。',
+      },
+      {
+        q: 'AMD 有冇有效期？',
+        a: 'AMD 冇明確嘅有效期，只要你簽署時神智清醒，文件就一直有效。相比之下，DNACPR 有效期不多於一年，須由醫生續期。我哋建議你每隔一段時間重新檢視 AMD 嘅內容，確保仍然符合你嘅意願。如果你嘅健康狀況有重大變化，或者你對治療嘅想法有改變，可以撤銷舊嘅 AMD 並簽署新嘅。',
+      },
+      {
+        q: 'AMD 喺公立醫院會俾人遵守嗎？',
+        a: '會。自 2026 年 7 月 31 日起，《維持生命治療的預作決定條例》（Cap. 651）正式生效，為 AMD 提供成文法保障，所有公立醫院均須遵守病人嘅有效 AMD。公立醫院亦可透過醫健通嘅標示功能查閱病人有否 AMD，獨居長者即使冇帶文件，醫院仍可得知。我哋嘅服務確保文件完全符合法定要求（包括見證人安排）。',
+      },
+      {
+        q: 'AMD 簽咗之後係咪即刻生效？',
+        a: '唔係。AMD 唔會即時生效——只會喺兩個條件同時滿足時先生效：① 你失去精神能力就維持生命治療作決定，同埋 ② 你嘅情況符合三種指明先決條件之一（末期疾病、持續性植物人狀態或不可逆轉昏迷、或其他晚期不可逆轉壽命受限疾病如晚期認知障礙症）。如果你暫時昏迷或病情可逆轉，AMD 唔會生效，醫護會照常急救。',
+      },
+      {
+        q: '以前簽落嘅 AMD 而家仲有冇效？',
+        a: '法例通過前簽署嘅 AMD，如果符合條例要求（兩名見證人、其中一位為註冊醫生、非利益攸關者），仍然維持有效（即「祖父條款」保障）。即使唔係用醫管局表格，只要簽署當時符合條例規定嘅要求，都會受尊重（<a href="https://www.elegislation.gov.hk/hk/cap651" target="_blank" rel="noopener" style="color: #4F6B5E; text-decoration: underline; text-underline-offset: 3px;">詳見條例附表 1 第 2 部</a>）。不過政府建議用標準表格重新訂立，確保文件格式同法律要求一致。（<a href="/zh/blog/amd-old-form-grandfathering/" style="color: #4F6B5E; text-decoration: underline; text-underline-offset: 3px;">睇埋：舊版 AMD 表格仲有冇效？「祖父條款」話你知 →</a>）',
+      },
+      {
+        q: '認知障礙症患者可以訂立 AMD 嗎？',
+        a: '可以，但要趁病發初期心智尚清晰時訂立。一旦病情進入晚期，患者失去精神能力，就無法訂立 AMD。醫生可為無精神能力者（包括未成年人）簽發 DNACPR，由至親或合資格人士副簽。太遲啟動預設照顧計劃，就無法執行病人意願。',
+      },
+      {
+        q: '醫護人員會唔會搜我啲袋搵 AMD 文件？',
+        a: '唔會。條例訂明醫護無須搜查病人或其個人物品確認有否 AMD，病人或照顧者有責任主動出示。DNACPR 方面，醫管局提供黃色標準文件袋（有明顯標示），授權消防員及救護人員搜尋袋內文件，建議放喺顯眼位置。',
+      },
+      {
+        q: '有咩方式可以撤銷 AMD？',
+        a: '條例訂明五種法定撤銷方式：① 書面撤銷（紙本或電子形式）② 簽署標準表格附表 2 第 5 部 ③ 燒毀、撕毀或劃掉文件內容，並喺每頁簽署 ④ 喺至少一名成年見證人在場下，以口頭或非語言方式（如點頭、搖頭、手語）表達撤銷意願 ⑤ 透過醫健通以電子方式撤銷（功能啟用後）。撤銷必須喺你仍有精神能力時進行。',
+      },
+      {
+        q: 'DNACPR 有冇電子版？',
+        a: '冇。DNACPR 不設電子版，因為救護人員需要即時核實文件。有效證明僅限正本或由註冊醫生/香港執業律師核實嘅紙本副本。醫管局為 DNACPR 病人提供黃色標準文件袋，建議放喺安全顯眼處。',
+      },
+      {
+        q: '喺院舍離世要唔要呈報死因庭？',
+        a: '2024 年 6 月 3 日起生效嘅修訂下，符合三項條件就唔需要呈報死因裁判法庭：① 離世前已診斷患有末期疾病 ② 離世前 14 日內曾獲註冊醫生診治 ③ 死因證明書上註明死於自然原因。',
+      },
+      {
+        q: '醫護人員點先算「知道」我有 AMD？',
+        a: '條例訂明，醫護人員要「知悉」AMD 先有責任跟從，而知悉嘅標準係：① 佢哋見到 AMD 嘅確效文本（正本或認證副本），或 ② 佢哋獲告知你嘅 AMD 副本可能儲存喺指定電子系統（醫健通），而系統內確實有可查閱嘅副本。所以實際做法係：隨身帶一份副本，或者上載去醫健通，確保醫護喺需要時知道你有 AMD。',
+      },
+      {
+        q: '醫生會唔會因為怕孭法律責任而唔肯跟 AMD？',
+        a: '唔使擔心。條例提供「醫治者保障」：醫護只要誠實而合理地相信你嘅 AMD 或 DNACPR 有效適用，無論係跟從指示唔做治療，定係喺唔知悉文件嘅情況下照常提供治療，都獲豁免民事、刑事同專業失當責任。換句話講，條例係鼓勵醫護安心跟從有效文件。',
+      },
+      {
+        q: '如果明知有 AMD 都唔跟，有咩後果？',
+        a: '條例本身訂立咗罪行，包括阻礙遵從 AMD 指令、誤導他人唔遵從或遵從預作決定文書。另外，如果醫護明知 AMD 或 DNACPR 有效適用仍然唔跟從，可能涉及其他現行法例（例如襲擊及毆打罪）或違反專業操守守則——唔係冇後果。',
+      },
+      {
+        q: '醫健通電子 AMD 係咩？',
+        a: '首階段（2026 年 7 月 31 日起），已簽署嘅紙本 AMD 可自由選擇上載至醫健通，由註冊醫生協助上載。上載後，公立醫院及獲授權私營機構可透過標示功能知悉病人有否 AMD，獨居長者即使冇帶文件，醫院仍可查閱。後期將推行直接喺醫健通訂立電子 AMD，日期仍在商討。',
+      },
+    ]
+  : [
+      {
+        q: 'If I collapse at home without a pulse, will paramedics still perform CPR? Will my AMD stop them?',
+        a: 'Paramedics will still perform CPR. The Ordinance follows a "when in doubt, save life first" principle — paramedics are not required to search your belongings to check for an AMD, nor can they determine on-site whether your AMD\'s three qualifying conditions (terminal illness, PVS, etc.) are met. To prevent paramedics from performing CPR, you need a DNACPR order. The HA provides a yellow standard document pouch for DNACPR patients, to be kept in a visible location, authorising emergency responders to search the pouch. We recommend having both AMD and DNACPR.',
+      },
+      {
+        q: 'Can I change my mind after signing an AMD?',
+        a: 'Yes, but only while you still have mental capacity. The Ordinance specifies five statutory revocation methods: ① written revocation (paper or electronic) ② signing Part 5 of the standard form (Schedule 2) ③ burning, tearing up, or crossing out the document and signing each page ④ oral or non-verbal expression (nodding, shaking head, sign language) before at least one adult witness ⑤ electronic revocation via eHealth (when the function is available). Note: a late-stage dementia patient saying "I don\'t agree now" does not constitute a valid oral revocation — healthcare staff will still follow the original AMD.',
+      },
+      {
+        q: 'How long does it take to sign an AMD? What\'s the process?',
+        a: 'After the doctor arrives, the entire process takes about 30 minutes. Steps include: the doctor speaks with you to confirm you are mentally competent and signing voluntarily (Mental Capacity Assessment); you sign the AMD before two witnesses; the original document is kept by your family. The whole process is completed at your home — no hospital or law firm visit required.',
+      },
+      {
+        q: 'Is AMD expensive?',
+        a: 'We offer reasonable pricing. The home-visit signing service is conducted by a registered doctor and includes witness arrangement. Since each client\'s situation varies (whether you also need EPA, remote location, etc.), please contact us on WhatsApp for a personalised quote. Our pricing is transparent with no hidden fees.',
+      },
+      {
+        q: 'What\'s the difference between AMD and DNACPR? Do I need both?',
+        a: 'An AMD is a legal document signed by you (the patient), expressing your wishes regarding medical treatment — it remains valid indefinitely until revoked or death. A DNACPR is a clinical order signed by two registered doctors (one must be a specialist) instructing medical staff not to perform CPR; it is valid for up to one year and must be renewed by a doctor; DNACPR has no electronic version — only the original or a certified copy by a doctor/lawyer is valid. Ideally, having both provides the most comprehensive protection — AMD protects your treatment wishes in hospital, while DNACPR ensures paramedics know not to perform CPR on-site.',
+      },
+      {
+        q: 'Do I need a lawyer to sign an AMD?',
+        a: 'No. The legal requirements for an AMD are: the signatory must be mentally competent, signing voluntarily, in writing, with two witnesses (one must be a registered doctor; the second must not be a beneficiary of your estate). No lawyer is required. Our doctor team will prepare all documents and arrange witnesses.',
+      },
+      {
+        q: 'What if I don\'t have family? Can I still sign an AMD?',
+        a: 'Yes. You only need two witnesses (one being a doctor) to sign an AMD. After signing, you can keep the original with a trusted friend, social worker, or custodian. We will provide recommendations for document safekeeping.',
+      },
+      {
+        q: 'If I want a home death, do I need AMD or DNACPR?',
+        a: 'If you choose home death, AMD or DNACPR is generally not needed. The key to a home death is having a willing doctor who can issue a Medical Certificate of Cause of Death at home — no need to call an ambulance or go to A&E. Additionally, from 3 June 2024, a death in a residential care home is exempt from coroner reporting if three conditions are met: ① terminal illness diagnosed before death ② seen by a registered doctor within 14 days before death ③ death certificate states natural causes. Our DoctorNow Home provides comprehensive home death solutions, including doctor visits, end-of-life care, and after-death arrangements.',
+      },
+      {
+        q: 'Does AMD have an expiry date?',
+        a: 'AMD has no fixed expiry date. As long as you were mentally competent when signing, the document remains valid. By contrast, a DNACPR is valid for up to one year and must be renewed by a doctor. We recommend reviewing your AMD periodically to ensure it still reflects your wishes. If your health condition changes significantly or your views on treatment change, you can revoke the old AMD and sign a new one.',
+      },
+      {
+        q: 'Will public hospitals respect my AMD?',
+        a: 'Yes. Since 31 July 2026, the Advance Decision on Life-sustaining Treatment Ordinance (Cap. 651) has taken full legal effect, giving AMD statutory force. All public hospitals are required to comply with a valid AMD. Hospitals can also check eHealth for an AMD indicator, so even elderly patients living alone without documents on hand can have their AMD known. Our service ensures documents are fully compliant with legal requirements.',
+      },
+      {
+        q: 'Does an AMD take effect immediately after signing?',
+        a: 'No. An AMD does not take effect immediately — it only activates when two conditions are both met: ① you lose mental capacity to make decisions about life-sustaining treatment, and ② your condition meets one of the three specified preconditions (terminal illness, persistent vegetative state or irreversible coma, or other advanced irreversible life-limiting conditions such as advanced dementia). If you are temporarily unconscious or your condition is reversible, the AMD will not apply, and healthcare staff will provide normal emergency treatment.',
+      },
+      {
+        q: 'Are AMDs signed before the Ordinance still valid?',
+        a: 'Yes. AMDs signed before the Ordinance took effect remain valid if they meet the Ordinance\'s requirements (two witnesses, one being a registered doctor, no conflict of interest) — this is the "grandfathering" protection. Even non-HA forms are respected if the requirements were met when the AMD was signed (see <a href="https://www.elegislation.gov.hk/hk/cap651!en" target="_blank" rel="noopener" style="color: #4F6B5E; text-decoration: underline; text-underline-offset: 3px;">Part 2 of Schedule 1 of the Ordinance</a>). However, the Government recommends re-executing using the standard statutory form to ensure consistency with current legal requirements. (<a href="/en/blog/amd-old-form-grandfathering/" style="color: #4F6B5E; text-decoration: underline; text-underline-offset: 3px;">Read more: Is my old AMD form still valid? →</a>)',
+      },
+      {
+        q: 'Can dementia patients make an AMD?',
+        a: 'Yes, but they should do so in the early stages while still mentally competent. Once the condition progresses to an advanced stage and the person loses mental capacity, they can no longer make an AMD. For incapacitated persons (including minors), a doctor can issue a DNACPR with co-signature from next-of-kin or a qualified person. Starting advance care planning too late means the patient\'s wishes cannot be carried out.',
+      },
+      {
+        q: 'Will healthcare staff search my belongings for an AMD?',
+        a: 'No. The Ordinance states healthcare staff are not required to search a patient or their belongings for an AMD — the responsibility lies with the patient or caregiver to present it proactively. For DNACPR, the HA provides a yellow standard document pouch (clearly marked) that authorises ambulance and fire personnel to search the pouch. Keep it in a visible, accessible location.',
+      },
+      {
+        q: 'How can I revoke an AMD?',
+        a: 'The Ordinance specifies five statutory revocation methods: ① written revocation (paper or electronic) ② signing Part 5 of the standard form (Schedule 2) ③ destroying, tearing up, or crossing out the document and signing each page ④ oral or non-verbal expression (nodding, shaking head, sign language) before at least one adult witness ⑤ electronic revocation via eHealth (when the function is available). Revocation is only valid while you still have mental capacity.',
+      },
+      {
+        q: 'Is there an electronic version of DNACPR?',
+        a: 'No. DNACPR has no electronic version because emergency responders need to verify the document immediately on-site. Only the original or a certified paper copy by a registered doctor or Hong Kong solicitor is valid. The HA provides a yellow standard document pouch for DNACPR patients — keep it in a safe, visible place.',
+      },
+      {
+        q: 'Do deaths in care homes need to be reported to the Coroner?',
+        a: 'Under amendments effective from 3 June 2024, a death in a residential care home does not need to be reported to the Coroner\'s Court if three conditions are met: ① terminal illness was diagnosed before death ② the deceased was seen by a registered doctor within 14 days before death ③ the death certificate states the cause of death as natural causes.',
+      },
+      {
+        q: 'How do healthcare staff "know" about my AMD?',
+        a: 'The Ordinance sets a specific standard for "notice": staff are only obliged to follow an AMD when they have seen a validating copy (the original or a certified copy), or when they are informed that a copy is or may be stored in the designated electronic system (eHealth) and an accessible copy is in fact stored there. Practical takeaway: carry a copy with you, or upload it to eHealth, so staff can know about your AMD when it matters.',
+      },
+      {
+        q: 'Will doctors be afraid of legal liability and refuse to follow my AMD?',
+        a: 'No need to worry. The Ordinance provides protection for treatment providers: as long as staff honestly and reasonably believe your AMD or DNACPR is valid and applicable, they are protected from civil, criminal, and professional misconduct liability — whether they follow the instruction to withhold treatment, or provide treatment when they have no notice of the document. The law is designed to encourage staff to follow valid instruments without fear.',
+      },
+      {
+        q: 'What happens if staff ignore a valid AMD?',
+        a: 'The Ordinance creates offences for obstructing compliance with an AMD instruction and for misleading others into complying or not complying with an advance decision instrument. Separately, if staff knowingly fail to follow a valid and applicable AMD or DNACPR, they may be liable under other existing laws (e.g. assault and battery) or professional conduct codes — there are consequences.',
+      },
+      {
+        q: 'What is eHealth electronic AMD?',
+        a: 'In Phase 1 (from 31 July 2026), signed paper AMDs can be voluntarily uploaded to eHealth, with a registered doctor assisting the upload. Once uploaded, public hospitals and authorised private institutions can see an indicator showing whether a patient has an AMD — even elderly patients living alone without documents on hand can have their AMD known. Direct electronic AMD creation on eHealth will be introduced in a later phase; the date is still under discussion.',
+      },
+    ];
+
+const stillHaveQuestions = isZh ? '仲有問題？' : 'Still have questions?';
+const stillHaveDesc = isZh
+  ? 'WhatsApp 直接問我哋，專人為你解答。'
+  : 'WhatsApp us directly and our team will answer your questions.';
+---
+
+<Layout title={pageTitle} description={pageDesc}>
+  <!-- HERO -->
+  <section class="pt-32 pb-20 px-6 md:px-12 bg-surface">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight text-primary">{h1}</h1>
+      <p class="text-lg md:text-xl text-on-surface-variant leading-relaxed max-w-3xl mx-auto">{h1Sub}</p>
+    </div>
+  </section>
+
+  <!-- FAQ List -->
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-4xl mx-auto space-y-4">
+      {faqList.map((item) => (
+        <details class="group rounded-2xl overflow-hidden bg-surface-container transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]">
+          <summary class="px-8 py-5 cursor-pointer font-bold text-lg flex items-center justify-between gap-4 select-none hover:opacity-80 transition-opacity text-primary list-none">
+            <span>{item.q}</span>
+            <span class="duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] flex-shrink-0 text-primary transition-transform group-open:rotate-180">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </span>
+          </summary>
+          <div class="px-8 pb-6 text-lg text-on-surface-variant">
+            <p set:html={item.a}></p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- Still have questions -->
+  <section class="py-24 px-6 md:px-12 text-white text-center bg-primary">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide mb-4">{stillHaveQuestions}</h2>
+      <p class="text-lg mb-8 text-white/80">{stillHaveDesc}</p>
+      <a
+        href={waUrl}
+        target="_blank"
+        rel="noopener"
+        class="inline-block text-lg font-bold px-8 py-4 rounded-full no-underline hover:opacity-90 transition-opacity bg-secondary text-white"
+      >
+        WhatsApp {isZh ? '提問' : 'Ask Us'}
+      </a>
+    </div>
+  </section>
+</Layout>

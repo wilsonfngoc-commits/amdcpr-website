@@ -1,0 +1,253 @@
+{
+  "_description": "Marketing action log — append-only, one entry per action. Channels: google-ads | meta | website-tracking | website-content | seo | content. ETL: loaded into brandops.marketing_actions by etl-load-json-to-db.sh. linked_results filled later from performance data.",
+  "brand": "amdcpr",
+  "actions": [
+    {
+      "date": "2026-08-16",
+      "brand": "amdcpr",
+      "channel": "website-tracking",
+      "action_type": "preset_text_registry_updated",
+      "entity": "_brands/_shared/blog-utm-whatsapp-strategy.md §3.5 — DNACPR row",
+      "before": "DNACPR01 / 我想了解預設醫療指示（DNACPR） / utm dnacpr (never matched site reality)",
+      "after": "AMD-S01 / AMD-S02 bracket codes per amdcpr PRD (§WA-codes): [AMD-S01] 我想了解預設醫療指示 / I want to learn about AMD; [AMD-S02] 我想預約上門簽署AMD / I want to book a home visit. No UTM. Registry now matches the SITE (site unchanged).",
+      "reason": "Wilson GO 2026-08-16 'proceed all 3'. CTO sweep found site ships AMD-Sxx codes, registry was stale — updating doc, not the live Astro site. WATI DNACPR attribution key = AMD-Sxx codes.",
+      "linked_results": "pending",
+      "logged_by": "cbo"
+    },
+    {
+      "id": "AMD-2026-08-18-01",
+      "date": "2026-08-18",
+      "brand": "amdcpr",
+      "channel": "website-tracking",
+      "action_type": "gclid_beacon_client_deployed",
+      "entity": "Layout.astro (all pages, brand=amdcpr) — gclid beacon client; deployed to Cloudflare Pages main",
+      "before": "no gclid beacon client on dnacpr.hk (sitewide WA links carried preset text only)",
+      "after": "beacon client added to Layout.astro (brand=amdcpr): reads ?gclid=, POSTs to beacon.hkdrnow.com, prepends short-code to WA link text param. Built clean (40 pages), deployed Cloudflare Pages main. Verified live: /, /zh/, /en/, pricing, services (6 pages).",
+      "reason": "Offline-conversion loop (blog-utm-whatsapp-strategy.md §5.1a): extend gclid attribution to DNACPR Astro pages. CTO executed + verified 2026-08-18.",
+      "linked_results": "pending",
+      "logged_by": "cbo"
+    },
+    {
+      "date": "2026-08-18",
+      "brand": "amdcpr",
+      "channel": "seo",
+      "action_type": "internal_links_added",
+      "entity": "doctornowhome.com → dnacpr.hk Priority-1 internal links (3 source pages, prod)",
+      "before": "P1 plan approved 2026-08-04, staged on DNH local (8564 + 6568) but NEVER applied to prod; blog 8306 (ranks #6 預設醫療指示 上門) had 0 dnacpr links anywhere. dnacpr.hk referring domains = 1 (doctornowhome.com only).",
+      "after": "Prod live + render-verified (2026-08-18): ① /amd/ (8564): 2 CTA buttons — 了解更多 AMD → /zh/what-is-amd/ + 預約上門簽署 → /zh/how-it-works/; ② blog 8306: 2 inline links — 預設醫療指示（Advance Directive）→ /zh/what-is-amd/ + 預設醫療指示同遺囑 → /zh/amd-vs-dnacpr/; ③ subsidy page 6568: 「預設醫療指示」→ /zh/how-it-works/. 0 staging refs, anchors varied, ≤2 links/page per plan rules. Stale Elementor per-post _elementor_element_cache purged on 8306 + 6568 (root cause of render lag).",
+      "reason": "Internal-linking plan P1 (internal-linking-plan.md): push authority from doctornowhome.com (936 backlinks) into dnacpr.hk to accelerate 預設醫療指示/AMD rankings. Wilson GO 2026-08-18 via CBO (item ② of the beacon+links batch).",
+      "linked_results": "pending"
+    },
+    {
+      "id": "AMD-2026-08-19-01",
+      "date": "2026-08-19",
+      "brand": "amdcpr",
+      "channel": "website-content",
+      "action_type": "robots_txt_ai_crawler_updated",
+      "entity": "dnacpr.hk robots.txt (prod, Cloudflare Pages)",
+      "before": "GPTBot and meta-externalagent were Disallowed by Cloudflare managed block",
+      "after": "Allow overrides added for GPTBot + meta-externalagent (last-rule-wins). All training-bot blocks (ClaudeBot, Google-Extended, CCBot, Bytespider, etc.) + ai-train=no Content-Signal remain intact.",
+      "reason": "AEO audit found training-bot blocks correct but GPTBot/meta-externalagent should be allowed for AI discoverability. Wilson approved.",
+      "linked_results": "pending",
+      "logged_by": "librarian"
+    },
+    {
+      "id": "AMD-2026-08-19-02",
+      "date": "2026-08-19",
+      "brand": "amdcpr",
+      "channel": "website-content",
+      "action_type": "pricing_ai_protection_applied",
+      "entity": "dnacpr.hk /zh/pricing/ and /pricing/ (prod)",
+      "before": "Bare dollar amounts (400/900) with no currency prefix; no last-updated date; no FAQ schema",
+      "after": "HK,400 / HK,900 with explicit HK$ prefix; 更新日期：2026年8月 / Last updated: August 2026 added; FAQPage JSON-LD with pricing Q&A added",
+      "reason": "AEO audit found AI-ambiguous pricing that could invite hallucination. Wilson approved pricing micro-fix.",
+      "linked_results": "pending",
+      "logged_by": "librarian"
+    },
+    {
+      "id": "AMD-2026-08-19-03",
+      "date": "2026-08-19",
+      "brand": "amdcpr",
+      "channel": "website-tracking",
+      "action_type": "gclid_beacon_client_deployed",
+      "entity": "dnacpr.hk (Astro/Cloudflare Pages) — gclid beacon client in Layout.astro",
+      "before": "No gclid beacon on dnacpr.hk (only DNH staging had it)",
+      "after": "Beacon client block added to Layout.astro (sitewide, before </body>), deployed to Cloudflare Pages. Brand logic: dnacpr.hk → amdcpr.",
+      "reason": "GCLID attribution cross-brand rollout — Part 2 of 3. Wilson approved Aug 18.",
+      "linked_results": "pending",
+      "logged_by": "librarian"
+    },
+    {
+      "id": "AMD-2026-08-23-01",
+      "date": "2026-08-23",
+      "brand": "amdcpr",
+      "channel": "seo",
+      "action_type": "gsc_request_indexing",
+      "entity": "dnacpr.hk /en/blog/ (blog hub EN)",
+      "before": "URL unknown to Google (never discovered)",
+      "after": "Requested indexing in GSC UI (Wilson, 2026-08-23)",
+      "reason": "Phase 1 of indexing acceleration: nudge Google to crawl blog hub; cap ~10-20 req/day, only 3 requested",
+      "linked_results": "pending",
+      "logged_by": "cbo"
+    },
+    {
+      "id": "AMD-2026-08-23-02",
+      "date": "2026-08-23",
+      "brand": "amdcpr",
+      "channel": "seo",
+      "action_type": "gsc_request_indexing",
+      "entity": "dnacpr.hk /zh/blog/ (blog hub ZH)",
+      "before": "Discovered - currently not indexed",
+      "after": "Requested indexing in GSC UI (Wilson, 2026-08-23)",
+      "reason": "Phase 1 of indexing acceleration: blog hub is the discovery path for all posts",
+      "linked_results": "pending",
+      "logged_by": "cbo"
+    },
+    {
+      "id": "AMD-2026-08-23-03",
+      "date": "2026-08-23",
+      "brand": "amdcpr",
+      "channel": "seo",
+      "action_type": "gsc_request_indexing",
+      "entity": "dnacpr.hk /en/pricing/ (money page EN)",
+      "before": "URL unknown to Google (ZH version indexed, EN not)",
+      "after": "Requested indexing in GSC UI (Wilson, 2026-08-23)",
+      "reason": "Phase 1 of indexing acceleration: EN pricing is a conversion page missing from index",
+      "linked_results": "pending",
+      "logged_by": "cbo"
+    },
+    {
+      "timestamp": "2026-08-23T23:05:30",
+      "action": "blog_publish",
+      "actor": "CBO",
+      "description": "Published 4 new blog posts ZH+EN to prod (dnacpr.hk): 什麼是預設照顧計劃 ACP? (what-is-acp) + 各國點樣做 series (acp-singapore, acp-uk, acp-nireland). Plus FAQ merge: what-is-amd +3 Q&As (慎入易出撤銷/醫護保障/家人不同意) with FAQPage JSON-LD schema; /faq 過渡安排 cross-link to amd-old-form-grandfathering. Content grounded in HKCSS newsletters 1-5. Deployed via deploy.sh (Cloudflare Pages main). Sitemap regenerated.",
+      "channels": [
+        "organic_blog"
+      ],
+      "urls": [
+        "https://dnacpr.hk/zh/blog/what-is-acp/",
+        "https://dnacpr.hk/en/blog/what-is-acp/",
+        "https://dnacpr.hk/zh/blog/acp-singapore/",
+        "https://dnacpr.hk/en/blog/acp-singapore/",
+        "https://dnacpr.hk/zh/blog/acp-uk/",
+        "https://dnacpr.hk/en/blog/acp-uk/",
+        "https://dnacpr.hk/zh/blog/acp-nireland/",
+        "https://dnacpr.hk/en/blog/acp-nireland/"
+      ]
+    },
+    {
+      "date": "2026-08-23",
+      "brand": "amdcpr",
+      "channel": "website-tracking",
+      "action_type": "ga4_gtag_snippet_replaced",
+      "entity": "dnacpr.hk (Astro/Cloudflare Pages) — Layout.astro custom gtag() shim replaced with standard Google Analytics snippet",
+      "before": "Custom gtag() shim that intercepted gtag('config', ...) calls, preventing collect beacons. 0 GA4 events since property creation on 2026-07-26 (19 days of zero data).",
+      "after": "Standard dataLayer.push(arguments) snippet. whatsapp_click event listener preserved as add-on. GA4 realtime on property 547128571 showing active users + events. All 7 key pages verified.",
+      "reason": "ADR 065 fix deployed to production. Broken custom shim was preventing page_view and whatsapp_click events from ever reaching GA4. Google Ads conversion action 'DoctorNow AMD (web) whatsapp_click' (7713109133) now receiving data.",
+      "linked_results": "pending",
+      "logged_by": "librarian"
+    },
+    {
+      "date": "2026-08-24",
+      "action_type": "internal_links_deployed",
+      "channel": "website-content",
+      "details": "Phase 2: 4 new ACP blog posts (ZH+EN) + homepage anchors + cross-links deployed to dnacpr.hk prod. Topics: what-is-acp, acp-singapore, acp-uk, acp-nireland.",
+      "logged_by": "librarian"
+    },
+    {
+      "date": "2026-08-24",
+      "action_type": "html_jsx_fix_deployed",
+      "channel": "website-content",
+      "details": "<br /> literal-text bug fixed on dnacpr.hk prod. Root cause: Astro expression HTML-escaped <br />. Fix: JSX fragment.",
+      "logged_by": "librarian"
+    },
+    {
+      "date": "2026-08-24",
+      "action_type": "gsc_sitemap_audit",
+      "channel": "seo",
+      "details": "Sitemap coverage verified for 15 unknown-to-Google URLs on dnacpr.hk. GSC resubmit blocked by readonly OAuth scope.",
+      "logged_by": "librarian"
+    },
+    {
+      "date": "2026-08-25",
+      "action_type": "openseo_rank_export",
+      "channel": "automated",
+      "details": "OpenSEO rank snapshot exported: 47 kw tracked, 6 ranking (0 at #1, 0 top-3), 45 with AI Overview. Run completed.",
+      "logged_by": "CBO"
+    },
+    {
+      "date": "2026-08-26",
+      "timestamp": "2026-08-26T09:30:00+08:00",
+      "brand": "amdcpr",
+      "channel": "google-ads",
+      "action_type": "ad_landing_page_swapped",
+      "entity": "AG1 enabled ads — both pointing to /zh/pricing/ and /en/pricing/",
+      "before": "Both enabled AG1 ads landed on /zh/pricing/ (info-intent searchers landing on pricing page — severe content mismatch). No keyword-level URL overrides.",
+      "after": "Both ads cloned-and-swapped to /zh/what-is-amd/ (new ad IDs 822257620548, 822257621034). Originals paused. Both new ads ENABLED and live.",
+      "reason": "P0 of DNACPR LP investigation. Post-click QS 2 caused by content mismatch — info-intent 預設醫療指示 searchers were hitting a pricing page. /zh/what-is-amd/ verified 200 / 0.13s TTFB / 7 WhatsApp CTAs.",
+      "linked_results": "pending — QS re-check in ~7-10 days",
+      "logged_by": "librarian (EOD sweep)"
+    },
+    {
+      "date": "2026-08-27",
+      "timestamp": "2026-08-27T22:30:00+08:00",
+      "brand": "amdcpr",
+      "channel": "website-content",
+      "action_type": "landing_page_copy_staged",
+      "entity": "/zh/what-is-amd/ and /en/what-is-amd/ (dnacpr.hk, Astro/Cloudflare Pages)",
+      "before": "what-is-amd page had no images, weak entity coverage (score 66, 73 entities, 0 images, 92 density).",
+      "after": "Staging build complete (https://2a86a11d.amdcpr-staging.pages.dev): 3 images added (hero portrait + SVG infographic + wide signing photo), entity copy fixes (政府/預設照顧計劃/親友/共識/法律效力). Target score 66→75+. Prod untouched.",
+      "reason": "P1a of DNACPR LP investigation (Wilson GO). Boosting what-is-amd lifts both ad QS ceiling and organic ranking. Awaiting Wilson GO for prod deploy.",
+      "linked_results": "pending",
+      "logged_by": "librarian (EOD sweep)"
+    },
+    {
+      "date": "2026-08-27",
+      "timestamp": "2026-08-27T18:00:00+08:00",
+      "brand": "doctornow",
+      "channel": "website-tracking",
+      "action_type": "whatsapp_preset_text_deployed",
+      "entity": "DNH staging — 西醫上門 (page 2854), 申請監護令 (page 3412), 在家離世 blog (page 8362)",
+      "before": "Server-rendered in-page CTA buttons carried legacy/generic preset text (我想了解老友宅醫服務 / 我想諮詢監護令／Part II 申請路徑). Floating-button JS injector was already rewriting client-side with correct campaign texts, but curl/server-HTML verification showed untagged links.",
+      "after": "Server-side edit applied via raw $wpdb update (slashing-safe, backups in ~/staging/dnh/backups/wa-cta-tags-2026-08-27/): 西醫上門 → dnh-c1 (我想了解老友宅醫服務（上門診症）), 申請監護令 → dnh-c3-guardianship (我想諮詢監護令（監護令）), 在家離世 blog → verify-only (no in-page CTA). Staging verified curl + browser. Awaiting Wilson GO for prod.",
+      "reason": "WATI attribution audit found DNH ad landing pages didn't carry campaign-level WhatsApp preset texts, preventing attribution to specific Google Ads campaigns. The floating-button JS was already working, but server-rendered CTAs (what curl/Google sees) were untagged.",
+      "linked_results": "pending",
+      "logged_by": "librarian (EOD sweep)"
+    },
+    {
+      "date": "2026-09-01",
+      "timestamp": "2026-09-01T21:55:00+08:00",
+      "brand": "dnacpr.hk",
+      "channel": "website-meta",
+      "action_type": "meta_rewrite_variantA_deployed",
+      "log_id": "CTO-MLOG-2026-09-01-001",
+      "entity": "Homepage /zh/ + /en/ — <title>, meta description, og:title/description, twitter:title/description (6 tags, atomic swap)",
+      "before": "zh: 'AMD 預設醫療指示 — 上門簽署 | DoctorNow' / AMD-framed description; en: 'Advance Medical Directive (AMD) — Signed at Home | DoctorNow' / AMD-framed description",
+      "after": "zh: 'DNACPR & 預設醫療指示 上門簽署 | 香港註冊西醫 | DoctorNow' + procedural desc (兩位醫生簽署/救護員唔做 CPR/30 分鐘/律師見證); en: 'DNACPR & AMD — Home Signing | Hong Kong Registered Doctors | DoctorNow' + procedural desc",
+      "approval": "Wilson GO 2026-09-01 21:47 (Variant A launch, Variant B standby 14-day fallback, Variant C skipped)",
+      "hard_rules_verified": "atomic EN/ZH single deploy (amdcpr main 416c5fc0); H1 hero 我唔想急救，唔想插喉 unchanged; JSON-LD ×1 unchanged; og:image /og-image.png unchanged; hreflang zh-HK/en/x-default intact; no other on-page change (single title/description prop edit in [lang]/index.astro)",
+      "deploy": "staging preview 0e406c25.amdcpr-6lf.pages.dev (verified) -> prod amdcpr main 416c5fc0 (verified live dnacpr.hk/zh/ + /en/ bare URLs, no cache-buster needed)",
+      "backup": "~/projects/amdcpr-website/backups/index.astro.bak-20260901-meta-variantA-pre (md5 64fb31748790084fa4fcaabc08a83002)",
+      "monitoring": "14-day CTR observation window 2026-09-01 -> 2026-09-15; threshold CTR > 2% vs baseline 0%; rollback trigger < 2% by day 14 -> swap Variant B (pre-written, standby)",
+      "by": "CTO (coding-cto)"
+    },
+    {
+      "date": "2026-09-08",
+      "timestamp": "2026-09-08T07:42:00+08:00",
+      "brand": "dnacpr.hk",
+      "channel": "website-content",
+      "action_type": "services_page_content_thickening_partB_deployed",
+      "log_id": "CTO-MLOG-2026-09-08-001",
+      "entity": "/zh/services/ + /en/services/ (dnacpr.hk, Astro/Cloudflare Pages)",
+      "before": "Services page thin — 174 lines Astro, 4 service cards + 1 approach section only (~5KB rendered HTML). No process walkthrough, no persona targeting, no scope-boundary transparency, no internal links to indexed blog posts (orphan pillar hub).",
+      "after": "Atomic thickening on /[lang]/services.astro: 3 new sections inserted BETWEEN 4 cards AND approach section — 上門流程 (5 numbered steps, 01-05) / What we do at the home visit · 適合對象 (3 persona cards w/ icon) / Who this is for · 服務範圍以外 (4 transparent scope items) / What's NOT included. Plus outbound link block AFTER approach — 延伸閱讀 / Related reading, 2 outbound links to indexed blog posts per language (/[lang]/blog/dnacpr-form-how-to-apply/ + /[lang]/blog/dementia-patients-amd/). Bidirectional to Step 1 Part A (commit 11baa2c added /services/ outbound from 4 indexed en/blog posts). ZH page size: 5KB → 42,121B. EN page size: 5KB → 42,686B.",
+      "approval": "Wilson GO 2026-09-08 07:35 ('go' after plan preview; section placement mid-page before approach confirmed at 07:34; outbound target dnacpr-form-how-to-apply + dementia-patients-amd confirmed at 07:34; tone '跟現有 formal-medical' confirmed at 07:34)",
+      "hard_rules_verified": "staging-first per Red Line #12 — staging preview https://69e9efb2.amdcpr-staging.pages.dev (verified 14/14 content markers via curl + grep on ZH + EN) → Wilson preview → Wilson GO '上 production' 07:42 → prod amdcpr main branch 2885671d → smoke check https://dnacpr.hk HTTP 200 + content marker 預設醫療指示 verified via deploy.sh; no other on-page change (single-file edit on services.astro); no CJK escape risk (Astro, not WP); atomic 170-line insert + 1 commit cd448b0 on main, NOT pushed (AGENTS.md Red Line #10 / Wilson preference)",
+      "deploy": "staging preview 69e9efb2.amdcpr-staging.pages.dev (verified) → prod amdcpr main 2885671d (verified live dnacpr.hk/zh/services/ + /en/services/, 14/14 markers ✅, ~42KB each lang)",
+      "commit": "cd448b0 feat(services): thicken /[lang]/services.astro with 3 sections + outbound blog links [part-B content audit] (170 insertions)",
+      "monitoring": "GSC re-index watch for /zh/services/ + /en/services/ (~7-10 days); next audit step: pillar-cluster internal linking review (Phase 2 of DNACPR LP investigation)",
+      "by": "CTO (coding-cto)"
+    }
+  ],
+  "last_updated": "2026-09-08T07:44:00+08:00"
+}

@@ -1,0 +1,427 @@
+---
+export async function getStaticPaths() {
+ return [
+ { params: { lang: 'zh' } },
+ { params: { lang: 'en' } },
+ ];
+}
+import Layout from '../../layouts/Layout.astro';
+import { waUrlShort } from '../../lib/site';
+
+const lang = Astro.params.lang || 'zh';
+const isZh = lang === 'zh';
+const prefix = `/${lang}`;
+const bookUrl = waUrlShort('AMD-S07', isZh ? 'zh' : 'en', isZh ? '我想了解AMD和DNACPR的分別' : 'I want to understand the difference between AMD and DNACPR');
+
+function parseMark(raw: string): { kind: 'yes' | 'no' | null; text: string } {
+ if (raw.startsWith('✅ ')) return { kind: 'yes', text: raw.slice(2) };
+ if (raw.startsWith('❌ ')) return { kind: 'no', text: raw.slice(2) };
+ return { kind: null, text: raw };
+}
+
+const pageTitle = isZh ? 'AMD vs DNACPR：有什麼分別？' : "AMD vs DNACPR: What's the Difference?";
+const pageDesc = isZh
+ ? '清楚了解預設醫療指示（AMD）和不用心肺復甦術文件（DNACPR）的分別，實際場景，以及哪個適合你。'
+ : 'Clear explanation of AMD vs DNACPR, real scenarios, and which option fits you.';
+
+const oneLiner = isZh
+ ? [
+ ['誰決定？', '你自己（預先簽署）', '醫生（經共識後發出）'],
+ ['拒絕什麼？', '任何維持生命治療（CPR、呼吸機、洗腎等）', '只拒絕心肺復甦術（CPR）'],
+ ['何時生效？', '你失去能力 + 符合指定疾病條件', '心臟/呼吸停止時'],
+ ['由誰簽署？', '你 + 兩位見證人（一位醫生）', '兩名註冊醫生（其中一位須為專科醫生）'],
+ ['法律基礎', '《條例》第 651 章', '《條例》第 651 章 + 醫管局臨床指引'],
+ ['有效期', '持續有效直至撤銷或離世', '不多於一年，可由醫生續期'],
+ ['電子版', '正本/核實副本/醫健通電子文本', '不設電子版，僅正本或核實副本'],
+ ]
+ : [
+ ['Who decides?', 'You (signed in advance)', 'Doctor (after consensus)'],
+ ['Refuses what?', 'Any life-sustaining treatment', 'CPR only'],
+ ['When effective?', 'Loss of capacity + qualifying condition', 'When heart/breathing stops'],
+ ['Signed by?', 'You + 2 witnesses (1 doctor)', 'Two registered doctors (one a specialist)'],
+ ['Legal basis', 'Cap. 651', 'Cap. 651 + HA clinical guidance'],
+ ['Validity', 'Indefinite until revoked or death', 'Up to 1 year, renewable by doctor'],
+ ['Electronic version', 'Original/certified copy/eHealth', 'No e-version — original or certified copy only'],
+ ];
+
+const tableRows = isZh
+ ? [
+ ['簽署人', '病人本人', '兩名註冊醫生（其中一位須為專科醫生）'],
+ ['文件性質', '法律文件（病人意願）', '臨床醫囑（醫生指示）'],
+ ['有效期', '持續有效直至撤銷或離世', '不多於一年，可由醫生續期'],
+ ['生效時機', '醫生確診符合指定狀況時', '即時生效（見文件即遵從）'],
+ ['適用範圍', '所有維生治療（不僅 CPR）', '僅限心肺復甦術（CPR）'],
+ ['見證人/副簽', '兩名見證人（一位須為醫生，另一位不可為遺產受益人）', '有精神能力成年人毋須副簽；無能力者/未成年人需至親副簽'],
+ ['電子版', '正本/核實副本/醫健通電子文本', '❌ 不設電子版——僅正本或醫生/律師核實副本有效'],
+ ['撤銷方式', '五種法定方式（須有精神能力）', '由醫生評估後取消'],
+ ['救護員會遵從嗎？', '❌ 不會——救護員無法即場判斷是否符合指定狀況', '✅ 會——黃色文件袋授權搜袋，見到文件即不進行 CPR'],
+ ['在家中有效嗎？', '部分有效（需配合醫生判決）', '有效（救護員會遵從）'],
+ ]
+ : [
+ ['Signed by', 'Patient', 'Two registered doctors (one must be a specialist)'],
+ ['Nature', "Legal document (patient's wishes)", "Clinical order (doctor's instruction)"],
+ ['Validity', 'Indefinite until revoked or death', 'Up to 1 year, renewable by doctor'],
+ ['When it takes effect', 'When a doctor diagnoses the qualifying condition', 'Immediately upon sight of the document'],
+ ['Scope', 'All life-sustaining treatments (not just CPR)', 'CPR only'],
+ ['Witness / co-signature', 'Two witnesses (one doctor; second must not be a beneficiary)', 'Competent adult: no co-signer needed; incapacitated/minor: next-of-kin co-sign'],
+ ['Electronic version', 'Original/certified copy/eHealth', '❌ No e-version — only original or doctor/lawyer certified copy'],
+ ['Revocation', 'Five statutory methods (requires mental capacity)', 'Cancelled by doctor reassessment'],
+ ['Paramedics comply?', '❌ No — cannot verify qualifying conditions on-site', '✅ Yes — yellow pouch authorises search; comply on sight'],
+ ['Effective at home?', "Partially (depends on doctor's assessment)", 'Yes (paramedics will comply)'],
+ ];
+
+const scenarios = isZh
+ ? [
+ {
+ title: '場景 A：只有 AMD，沒有 DNACPR',
+ body: '陳伯簽了 AMD，拒絕 CPR。他在家中離世，情況是末期癌症。因為不在醫院，不需要 DNACPR——家人出示 AMD，醫生確認情況符合，自然離世。',
+ },
+ {
+ title: '場景 B：只有 DNACPR，沒有 AMD',
+ body: '張婆婆在醫院，醫生認為急救對她無意義，與家人商量後發出 DNACPR 命令。她只拒絕 CPR，其他治療（如抗生素、輸液）仍會繼續。',
+ },
+ {
+ title: '場景 C：兩樣都有',
+ body: '李生在健康時簽了 AMD（拒絕 CPR、呼吸機和洗腎），入住醫院後醫生根據他的 AMD 發出 DNACPR 命令。當他心跳停止，醫生不進行 CPR；當他需要洗腎時，醫生也根據 AMD 停止透析。',
+ },
+ ]
+ : [
+ {
+ title: 'Scenario A: AMD only',
+ body: 'Uncle Chan signed an AMD refusing CPR. He dies at home with terminal cancer. No DNACPR is needed outside hospital — the family presents the AMD and the doctor confirms the conditions are met.',
+ },
+ {
+ title: 'Scenario B: DNACPR only',
+ body: 'Granny Cheung is in hospital. Doctors agree CPR would be futile and issue a DNACPR after discussing with family. Only CPR is refused; other treatments may continue.',
+ },
+ {
+ title: 'Scenario C: Both',
+ body: 'Mr Lee signed an AMD while healthy (refusing CPR, ventilation, and dialysis). In hospital, doctors issue a DNACPR based on his AMD. When his heart stops, no CPR; when dialysis is needed, it is withheld per the AMD.',
+ },
+ ];
+
+const fitGuide = isZh
+ ? [
+ { if: '健康、想提前規劃', then: '✅ 先簽 AMD' },
+ { if: '已確診末期病', then: '✅ AMD + DNACPR 兩樣都安排' },
+ { if: '家人已住院、醫生建議不急救', then: '✅ DNACPR（由醫生處理）' },
+ { if: '不清楚自己想要什麼', then: '✅ 先諮詢醫生，了解 AMD 內容' },
+ { if: '只想拒絕 CPR，其他治療照常', then: '✅ 可考慮只拒 CPR 的安排（Form 2）' },
+ ]
+ : [
+ { if: 'Healthy and planning ahead', then: '✅ Start with an AMD' },
+ { if: 'Already diagnosed terminal', then: '✅ Arrange both AMD and DNACPR' },
+ { if: 'Family in hospital; doctor advises no CPR', then: '✅ DNACPR (doctor-led)' },
+ { if: 'Unsure what you want', then: '✅ Consult a doctor about AMD first' },
+ { if: 'Refuse CPR only; other care continues', then: '✅ Consider CPR-only arrangements (Form 2)' },
+ ];
+
+const threeDocs = isZh
+ ? [
+ { name: 'AMD（預設醫療指示）', use: '拒絕維持生命治療', offer: '✅ 醫生上門簽署' },
+ { name: 'EPA（持久授權書）', use: '委託他人處理財務', offer: '⚠️ 可配合安排' },
+ { name: '遺囑／平安紙', use: '分配遺產', offer: '❌ 建議找律師' },
+ ]
+ : [
+ { name: 'AMD', use: 'Refuse life-sustaining treatment', offer: '✅ Doctor home visit' },
+ { name: 'EPA', use: 'Appoint someone for finances', offer: '⚠️ Can arrange together' },
+ { name: 'Will', use: 'Distribute assets', offer: '❌ See a lawyer' },
+ ];
+---
+
+<Layout title={pageTitle} description={pageDesc}>
+  <section class="pt-32 pb-20 px-6 md:px-12 bg-surface-container-low border-b border-outline-variant">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight text-primary">
+        {isZh ? 'AMD vs DNACPR：同樣關於「不急救」，但完全不同的兩回事' : 'AMD vs DNACPR: both about "no CPR" — completely different tools'}
+      </h1>
+      <p class="text-lg md:text-xl text-on-surface-variant leading-relaxed max-w-3xl mx-auto">
+        {isZh
+          ? '一個是自己預先決定的指示，一個是醫生在現場的判斷。搞清楚分別，才不會在關鍵時刻搞錯。'
+          : 'One is your advance decision; the other is a doctor\'s clinical order. Know the difference before it matters.'}
+      </p>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-12">
+        {isZh ? '一句話分清楚' : 'In one glance'}
+      </h2>
+      <div class="overflow-x-auto rounded-2xl border border-outline-variant">
+        <table class="w-full text-left">
+          <thead class="bg-primary">
+            <tr>
+              <th class="px-6 py-4 text-white font-bold text-sm">{isZh ? '項目' : 'Aspect'}</th>
+              <th class="px-6 py-4 text-white font-bold text-sm">AMD</th>
+              <th class="px-6 py-4 text-white font-bold text-sm">DNACPR</th>
+            </tr>
+          </thead>
+          <tbody>
+            {oneLiner.map((row, i) => (
+              <tr class:list={['border-b border-outline-variant', i % 2 === 0 ? 'bg-surface-container-low' : 'bg-transparent']}>
+                <td class="px-6 py-4 font-semibold text-on-surface">{row[0]}</td>
+                <td class="px-6 py-4 text-on-surface-variant">{row[1]}</td>
+                <td class="px-6 py-4 text-on-surface-variant">{row[2]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div class="rounded-3xl p-8 bg-surface-container border border-outline-variant">
+        <div class="flex gap-4 items-center mb-6">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-xl font-bold bg-primary">A</div>
+          <h2 class="text-2xl font-bold text-primary">{isZh ? '什麼是 AMD？' : 'What is an AMD?'}</h2>
+        </div>
+        <div class="space-y-4 text-on-surface leading-relaxed">
+          <p>
+            {isZh
+              ? 'AMD 是由你（病人）自行簽署的法律文件。你在精神健全時預先聲明：當陷入三種指定狀況時，你不希望接受哪些維生治療。'
+              : 'An AMD is a legal document you sign while competent, stating which life-sustaining treatments you refuse under three qualifying conditions.'}
+          </p>
+          <p>
+            {isZh
+              ? 'AMD 是一份意願聲明，何時生效由醫生判斷你的狀況是否符合條件決定。'
+              : 'It is a statement of wishes — activation depends on a doctor confirming the qualifying condition.'}
+          </p>
+        </div>
+      </div>
+      <div class="rounded-3xl p-8 bg-surface border border-outline-variant">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-xl font-bold bg-secondary">D</div>
+          <h2 class="text-2xl font-bold text-primary">{isZh ? '什麼是 DNACPR？' : 'What is a DNACPR?'}</h2>
+        </div>
+        <div class="space-y-4 text-on-surface leading-relaxed">
+          <p>
+            {isZh
+              ? 'DNACPR 是由兩名註冊醫生（其中一位須為專科醫生）簽署的臨床醫囑。當病人出現心跳停頓或呼吸停頓時，指示醫療團隊不進行心肺復甦術（CPR）。有精神能力的成年人毋須家人副簽，無能力者或未成年人則需至親副簽。醫管局提供黃色標準文件袋放置 DNACPR，授權救護人員搜尋。'
+              : 'A DNACPR is a clinical order signed by two registered doctors (one must be a specialist) instructing teams not to perform CPR if the heart or breathing stops. Mentally competent adults do not need a family co-signer; incapacitated persons or minors require next-of-kin co-signature. The HA provides a yellow standard document pouch for DNACPR, authorising emergency responders to search it.'}
+          </p>
+          <p>
+            {isZh
+              ? 'DNACPR 是即時生效的醫療指令——救護員見到黃色文件袋就會查閱，見到 DNACPR 文件就會遵從。'
+              : 'It is immediately effective — paramedics check the yellow pouch on arrival and comply with the DNACPR on sight.'}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 px-6 md:px-12 bg-surface">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary text-center mb-12">
+        {isZh ? '用一張圖記住' : 'Remember with one diagram'}
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="rounded-3xl p-8 bg-surface-container border border-outline-variant">
+          <p class="text-sm font-bold uppercase tracking-wider mb-3 text-primary">{isZh ? '誰做決定？' : 'Who decides?'}</p>
+          <p class="font-bold mb-4 text-2xl text-primary">AMD</p>
+          <ul class="list-none pl-0 space-y-2 text-on-surface-variant">
+            <li>• {isZh ? '自己決定' : 'You decide'}</li>
+            <li>• {isZh ? '拒絕多種 LST' : 'Refuse multiple LSTs'}</li>
+            <li>• {isZh ? '末期病／植物人等' : 'Terminal / PVS etc.'}</li>
+            <li>• {isZh ? '1 位醫生見證' : '1 doctor as witness'}</li>
+          </ul>
+        </div>
+        <div class="rounded-3xl p-8 bg-surface-container-low border border-outline-variant text-center">
+          <p class="text-sm font-bold uppercase tracking-wider mb-3 text-primary">{isZh ? '誰做決定？' : 'Who decides?'}</p>
+          <p class="text-2xl font-bold mb-4 text-secondary">DNACPR</p>
+          <ul class="space-y-2 text-on-surface-variant text-left list-none pl-0">
+            <li>• {isZh ? '醫生決定' : 'Doctor decides'}</li>
+            <li>• {isZh ? '只拒絕 CPR' : 'CPR only'}</li>
+            <li>• {isZh ? '心臟／呼吸停止時' : 'When heart/breathing stops'}</li>
+            <li>• {isZh ? '2 位醫生簽署' : '2 doctors sign'}</li>
+          </ul>
+        </div>
+      </div>
+      <p class="mt-8 text-center text-lg font-medium text-primary">
+        {isZh
+          ? '簡單講：AMD 是你的「遺願」，DNACPR 是醫生根據你的遺願發出的「執行命令」。'
+          : 'Simply: AMD is your wish; DNACPR is the doctor\'s execution order based on that wish.'}
+      </p>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-12">
+        {isZh ? '詳細比較' : 'Detailed comparison'}
+      </h2>
+      <div class="overflow-x-auto rounded-2xl border border-outline-variant">
+        <table class="w-full text-left">
+          <thead class="bg-primary">
+            <tr>
+              <th class="px-6 py-4 text-white font-bold text-sm uppercase tracking-wider">{isZh ? '項目' : 'Aspect'}</th>
+              <th class="px-6 py-4 text-white font-bold text-sm uppercase tracking-wider">AMD</th>
+              <th class="px-6 py-4 text-white font-bold text-sm uppercase tracking-wider">DNACPR</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableRows.map((row, i) => (
+              <tr class:list={['border-b border-outline-variant', i % 2 === 0 ? 'bg-surface-container-low' : 'bg-transparent']}>
+                <td class="px-6 py-4 font-semibold text-on-surface">{row[0]}</td>
+                {[row[1], row[2]].map((cell) => {
+                  const c = parseMark(cell);
+                  return (
+                    <td class="px-6 py-4 text-on-surface-variant">
+                      {c.kind ? (
+                        <span class="inline-flex items-start gap-2">
+                          <span
+                            class:list={[
+                              'mt-0.5 inline-flex items-center justify-center shrink-0 w-[1.15em] h-[1.15em] rounded-[3px] text-white',
+                              c.kind === 'yes' ? 'bg-green-500' : 'bg-red-500',
+                            ]}
+                            aria-hidden="true"
+                          >
+                            {c.kind === 'yes' ? (
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                            ) : (
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                            )}
+                          </span>
+                          <span>{c.text}</span>
+                        </span>
+                      ) : (
+                        cell
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-10 p-6 rounded-2xl text-center text-lg font-medium bg-surface-container border border-outline-variant text-on-surface">
+        {isZh
+          ? '理想做法：同時擁有 AMD 和 DNACPR。AMD 保護你在醫院不被過度治療，DNACPR 確保救護員在緊急情況下知道你唔想被 CPR。'
+          : 'Ideal: have both. AMD protects you from overtreatment in hospital; DNACPR tells paramedics you do not want CPR.'}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-center mb-12 text-primary">
+        {isZh ? '實際場景' : 'Real scenarios'}
+      </h2>
+      <div class="space-y-6">
+        {scenarios.map((s) => (
+          <div class="rounded-2xl p-8 bg-surface border border-outline-variant">
+            <h3 class="font-bold text-xl text-primary mb-3">{s.title}</h3>
+            <p class="leading-relaxed text-on-surface-variant">{s.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-12">
+        {isZh ? '哪個適合我？' : 'Which fits me?'}
+      </h2>
+      <div class="overflow-x-auto rounded-2xl border border-outline-variant">
+        <table class="w-full text-left">
+          <thead class="bg-primary">
+            <tr>
+              <th class="px-6 py-4 text-white font-bold text-sm">{isZh ? '如果你…' : 'If you…'}</th>
+              <th class="px-6 py-4 text-white font-bold text-sm">{isZh ? '建議' : 'Suggestion'}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {fitGuide.map((row, i) => (
+              <tr class:list={['border-b border-outline-variant', i % 2 === 0 ? 'bg-surface-container-low' : 'bg-transparent']}>
+                <td class="px-6 py-4 text-on-surface">{row.if}</td>
+                <td class="px-6 py-4 font-semibold text-on-surface">{row.then}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-6 text-center">
+        {isZh ? 'AMD vs DNACPR vs 平安三寶' : 'AMD, DNACPR & the "Three Peaceful Documents"'}
+      </h2>
+      <p class="leading-relaxed mb-10 text-center text-on-surface-variant">
+        {isZh
+          ? '「平安三寶」是三個獨立文件的統稱。我們專注 AMD，因為這是醫療專業——我們不是律師。'
+          : 'The "three peaceful documents" are three separate instruments. We focus on AMD — we are doctors, not lawyers.'}
+      </p>
+      <div class="space-y-4">
+        {threeDocs.map((d) => (
+          <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 rounded-2xl p-6 bg-surface-container border border-outline-variant">
+            <p class="font-bold text-primary md:w-1/3">{d.name}</p>
+            <p class="md:w-1/3 text-on-surface-variant">{d.use}</p>
+            <p class="md:w-1/3 font-medium text-on-surface">{d.offer}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-8">
+        {isZh ? '居家離世場景' : 'Home death scenario'}
+      </h2>
+      <div class="space-y-4 text-lg text-on-surface leading-relaxed">
+        <p>
+          {isZh
+            ? '如果你嘅計劃係在家離世，私家醫生可以直接上門簽發《死因證明書》，不需要救護車、不需要急症室。在這種情況下，無論 AMD 還是 DNACPR 都不一定需要——因為你根本唔會入醫院。'
+            : 'For a planned home death, a private doctor can issue a Medical Certificate of Cause of Death at home — no ambulance or A&E. In that case you may not need AMD or DNACPR because you will not enter hospital.'}
+        </p>
+        <p>
+          {isZh
+            ? '另外，2024 年 6 月 3 日起，院舍離世如符合三項條件：① 死前診斷末期疾病 ② 離世前 14 日內獲註冊醫生診治 ③ 死因證明書註明自然原因，則不需呈報死因裁判法庭。'
+            : 'Additionally, from 3 June 2024, a care home death is exempt from coroner reporting if three conditions are met: ① terminal illness diagnosed before death ② seen by a registered doctor within 14 days before death ③ death certificate states natural causes.'}
+        </p>
+        <p>
+          {isZh
+            ? '如果你想在家離世，最重要嘅係搵到願意提供上門善終服務嘅醫生團隊——我哋 DoctorNow Home 正係提供呢項服務。'
+            : 'What matters most is a doctor team willing to provide home-based end-of-life care — which DoctorNow Home offers.'}
+        </p>
+      </div>
+      <a
+        href={`${prefix}/services`}
+        class="inline-block mt-8 text-lg font-bold text-white px-8 py-4 rounded-full no-underline hover:opacity-90 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] bg-primary"
+      >
+        {isZh ? '了解在家離世方案 →' : 'Learn about home death →'}
+      </a>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 text-white text-center bg-primary">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide mb-4">{isZh ? '想了解更多？' : 'Want to learn more?'}</h2>
+      <p class="text-lg mb-8 text-white/80">
+        {isZh ? 'WhatsApp 我哋，專人解答你對 AMD 和 DNACPR 嘅問題。' : 'WhatsApp us — our team will answer your AMD and DNACPR questions.'}
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href={bookUrl}
+          target="_blank"
+          rel="noopener"
+          class="inline-block text-lg font-bold px-8 py-4 rounded-full no-underline hover:opacity-90 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] bg-secondary text-white"
+        >
+          WhatsApp {isZh ? '查詢' : 'Inquiry'}
+        </a>
+        <a
+          href={`${prefix}/faq`}
+          class="inline-block text-lg font-bold px-8 py-4 rounded-full no-underline hover:bg-white/10 transition-colors text-white border border-white/30"
+        >
+          {isZh ? '睇常見問題' : 'View FAQ'}
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

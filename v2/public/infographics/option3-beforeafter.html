@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infographic Option 3 — Before/After Split</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Quicksand', 'Noto Sans TC', sans-serif; background: #FAF6F2; color: #4A4036; padding: 40px 20px; }
+.container { max-width: 800px; margin: 0 auto; }
+h1 { text-align: center; font-size: 28px; font-weight: 700; color: #4F6B5E; margin-bottom: 8px; }
+.subtitle { text-align: center; font-size: 14px; color: #7A6F64; margin-bottom: 32px; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-radius: 20px; overflow: hidden; margin-bottom: 32px; box-shadow: 0 4px 20px rgba(112,141,129,0.12); }
+.before { background: #E6D7C8; padding: 28px 24px; }
+.after { background: #4F6B5E; padding: 28px 24px; }
+.before .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #7A6F64; margin-bottom: 4px; }
+.after .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+.before h2 { font-size: 20px; font-weight: 700; color: #4A4036; margin-bottom: 8px; }
+.after h2 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.before ul { list-style: none; }
+.after ul { list-style: none; }
+.before li { font-size: 13px; line-height: 1.7; color: #7A6F64; padding: 4px 0; }
+.after li { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.85); padding: 4px 0; }
+.before li::before { content: '✕'; color: #8F4A42; margin-right: 8px; font-weight: 700; }
+.after li::before { content: '✓'; color: #FAF6F2; margin-right: 8px; font-weight: 700; }
+.changes-title { text-align: center; font-size: 18px; font-weight: 700; color: #4F6B5E; margin-bottom: 20px; }
+.changes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.change-card { background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 1px 6px rgba(112,141,129,0.06); display: flex; gap: 12px; align-items: flex-start; }
+.change-card .num { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0; }
+.change-card .text h4 { font-size: 14px; font-weight: 700; color: #4A4036; margin-bottom: 2px; }
+.change-card .text p { font-size: 12px; line-height: 1.5; color: #7A6F64; }
+.footer { text-align: center; margin-top: 32px; padding-top: 20px; border-top: 1px solid #E6D7C8; font-size: 12px; color: #7A6F64; }
+@media (max-width: 600px) { .split { grid-template-columns: 1fr; } .changes { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>AMD 新法例懶人包</h1>
+  <p class="subtitle">7.31 生效前後對比</p>
+
+  <div class="split">
+    <div class="before">
+      <div class="label">條例生效前</div>
+      <h2>法律灰色地帶</h2>
+      <ul>
+        <li>醫生有法律責任憂慮</li>
+        <li>AMD 效力模糊</li>
+        <li>醫院執行不一致</li>
+        <li>市民唔敢簽署</li>
+      </ul>
+    </div>
+    <div class="after">
+      <div class="label">條例生效後</div>
+      <h2>成文法保障</h2>
+      <ul>
+        <li>清晰法律框架</li>
+        <li>AMD 寫入成文法</li>
+        <li>醫院有明確指引</li>
+        <li>市民可以安心簽署</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="changes-title">5 個你要知的改變</p>
+  <div class="changes">
+    <div class="change-card">
+      <div class="num" style="background:#4F6B5E;">1</div>
+      <div class="text"><h4>AMD 變為成文法</h4><p>由普通法進入成文法，法律效力更清晰。</p></div>
+    </div>
+    <div class="change-card">
+      <div class="num" style="background:#8F4A42;">2</div>
+      <div class="text"><h4>簽署流程清晰</h4><p>18歲以上、精神健全、兩位見證人。</p></div>
+    </div>
+    <div class="change-card">
+      <div class="num" style="background:#4F6B5E;">3</div>
+      <div class="text"><h4>三種觸發情況</h4><p>末期病、植物人、晚期不可逆疾病。</p></div>
+    </div>
+    <div class="change-card">
+      <div class="num" style="background:#8F4A42;">4</div>
+      <div class="text"><h4>唔代表放棄治療</h4><p>只拒維持生命治療，舒緩治療仍繼續。</p></div>
+    </div>
+    <div class="change-card" style="grid-column: 1 / -1;">
+      <div class="num" style="background:#4F6B5E;">5</div>
+      <div class="text"><h4>醫生可上門簽署</h4><p>註冊西醫上門完成 AMD 簽署，約 30 分鐘。</p></div>
+    </div>
+  </div>
+
+  <div class="footer">DoctorNow AMD · 上門簽署 AMD 服務</div>
+</div>
+</body>
+</html>

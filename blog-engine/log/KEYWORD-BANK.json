@@ -1,0 +1,35 @@
+{
+  "_description": "Keyword bank. One entry per researched keyword.",
+  "keywords": [
+    {
+      "keyword": "預設醫療指示 舊表格",
+      "intent": "informational",
+      "source": "amd-old-form-grandfathering (2026-08-04)",
+      "status": "targeted"
+    },
+    {
+      "keyword": "AMD 表格 有效",
+      "intent": "informational",
+      "source": "amd-old-form-grandfathering (2026-08-04)",
+      "status": "targeted"
+    },
+    {
+      "keyword": "祖父條款 AMD",
+      "intent": "informational",
+      "source": "amd-old-form-grandfathering (2026-08-04)",
+      "status": "targeted"
+    },
+    {
+      "keyword": "醫管局 AMD 表格",
+      "intent": "informational",
+      "source": "amd-old-form-grandfathering (2026-08-04)",
+      "status": "targeted"
+    },
+    {
+      "keyword": "舊版預設醫療指示",
+      "intent": "informational",
+      "source": "amd-old-form-grandfathering (2026-08-04)",
+      "status": "targeted"
+    }
+  ]
+}

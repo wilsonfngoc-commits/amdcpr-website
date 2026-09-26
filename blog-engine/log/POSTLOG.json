@@ -1,0 +1,28 @@
+{
+  "_description": "Published content log. One entry per published post.",
+  "posts": [
+    {
+      "title": "簽咗舊版 AMD 表格仲有效嗎？——「祖父條款」話你知",
+      "title_en": "Is My Old AMD Form Still Valid? — The \"Grandfathering\" Clause Explained",
+      "slug": "amd-old-form-grandfathering",
+      "category": "AMD 知識",
+      "strapi_post_id": 12,
+      "url": "https://dnacpr.hk/zh/blog/amd-old-form-grandfathering/",
+      "url_en": "https://dnacpr.hk/en/blog/amd-old-form-grandfathering/",
+      "published_at": "2026-08-04T22:37:00+08:00",
+      "seo_score": 86,
+      "keywords": [
+        "預設醫療指示 舊表格",
+        "AMD 表格 有效",
+        "祖父條款 AMD",
+        "醫管局 AMD 表格",
+        "舊版預設醫療指示"
+      ],
+      "sources": [
+        "CUHK生命倫理中心《維持生命治療的預作決定條例：概要》",
+        "Cap.651 elegislation"
+      ],
+      "status": "published"
+    }
+  ]
+}

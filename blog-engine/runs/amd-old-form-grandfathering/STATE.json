@@ -1,0 +1,71 @@
+{
+  "topic": "簽咗舊版 AMD 表格仲有效嗎？（祖父條款）",
+  "topic_slug": "amd-old-form-grandfathering",
+  "business": "amdcpr",
+  "started": "2026-08-04T20:05:00+08:00",
+  "current_step": 11,
+  "status": "complete",
+  "steps": {
+    "1": {
+      "status": "approved",
+      "completed_at": "2026-08-04",
+      "note": "keywords from outline"
+    },
+    "2": {
+      "status": "approved",
+      "completed_at": "2026-08-04",
+      "note": "SERP: grandfathering angle not covered by top10"
+    },
+    "3": {
+      "status": "approved",
+      "completed_at": "2026-08-04",
+      "note": "CUHK synopsis + Cap.651 + outline"
+    },
+    "4": {
+      "status": "approved",
+      "completed_at": "2026-08-04",
+      "note": "outline = brief (blog-outline-old-amd-form-grandfathering.md)"
+    },
+    "5": {
+      "status": "approved",
+      "completed_at": "2026-08-04",
+      "note": "zh + en drafts written"
+    },
+    "6": {
+      "status": "approved",
+      "completed_at": "2026-08-04",
+      "note": "Q-headers, direct answers, FAQ"
+    },
+    "7": {
+      "status": "approved",
+      "completed_at": "2026-08-04",
+      "note": "slop scan clean"
+    },
+    "8": {
+      "status": "approved",
+      "completed_at": "2026-08-04",
+      "note": "HK terms only (撤銷/簽署/證人)"
+    },
+    "9": {
+      "status": "approved",
+      "completed_at": "2026-08-04",
+      "note": "meta + excerpt done; OG image pending separately"
+    },
+    "10": {
+      "status": "approved",
+      "completed_at": "2026-08-04",
+      "score": 86,
+      "note": "PASS >= 80"
+    },
+    "11": {
+      "status": "approved",
+      "completed_at": "2026-08-04",
+      "note": "Strapi post 12 published to prod 2026-08-04 22:37 HKT"
+    }
+  },
+  "decisions": [],
+  "blockers": [],
+  "strapi_post_id": 12,
+  "strapi_url": "https://dnacpr.hk/zh/blog/amd-old-form-grandfathering/",
+  "completed_at": "2026-08-04T22:51:00+08:00"
+}

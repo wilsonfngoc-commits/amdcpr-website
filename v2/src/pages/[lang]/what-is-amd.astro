@@ -1,0 +1,626 @@
+---
+export async function getStaticPaths() {
+ return [
+ { params: { lang: 'zh' } },
+ { params: { lang: 'en' } },
+ ];
+}
+import Layout from '../../layouts/Layout.astro';
+import { waUrlShort } from '../../lib/site';
+import { icons } from '../../lib/icons';
+
+const lang = Astro.params.lang || 'zh';
+const isZh = lang === 'zh';
+const prefix = `/${lang}`;
+const bookUrl = waUrlShort('AMD-S01', isZh ? 'zh' : 'en', isZh ? '我想了解預設醫療指示' : 'I want to learn about Advance Medical Directives');
+
+function parseMark(raw: string): { kind: 'yes' | 'no' | null; text: string } {
+  if (raw.startsWith('✅ ')) return { kind: 'yes', text: raw.slice(2) };
+  if (raw.startsWith('❌ ')) return { kind: 'no', text: raw.slice(2) };
+  return { kind: null, text: raw };
+}
+
+const pageTitle = isZh ? '預設醫療指示完整指南：意義、重要性與申請流程解析' : 'Advance Medical Directive Hong Kong: How to Create & Register Your Wishes';
+const pageDesc = isZh
+ ? '預設醫療指示（AMD）完整指南：意義、法律效力、訂立資格與條件、撰寫方法、家庭溝通、醫療團隊角色及修改撤銷。香港《維持生命治療的預作決定條例》（第651章）已於 2026 年 7 月 31 日正式生效。'
+ : 'Complete guide to Advance Medical Directives (AMD) in Hong Kong: legal framework (Cap. 651, effective 31 July 2026), eligibility, how to create and register your wishes, key components, revoking or amending, healthcare professionals\' roles, and ethical considerations.';
+
+const treatments = isZh
+ ? [
+ { name: '心肺復甦術 (CPR)', desc: '心跳或呼吸停止時的心外壓、電擊、插喉' },
+ { name: '人工輔助呼吸', desc: '無法自行呼吸時，用機器代呼吸' },
+ { name: '人工供給營養及液體', desc: '用喉管餵食或補充水分' },
+ { name: '血液製品', desc: '輸血或血液製品治療' },
+ { name: '心臟起搏器', desc: '植入或使用心臟起搏器' },
+ { name: '血管增壓素', desc: '使用血管增壓藥物維持血壓' },
+ { name: '專門治療（化療/透析）', desc: '化療、血液透析（洗腎）等專門治療' },
+ { name: '抗生素治療', desc: '治療感染的藥物' },
+ ]
+ : [
+ { name: 'CPR', desc: 'Chest compressions, defibrillation, intubation when heart/breathing stops' },
+ { name: 'Mechanical ventilation', desc: 'Machine breathing when you cannot breathe on your own' },
+ { name: 'Artificial nutrition & hydration', desc: 'Feeding tubes or IV fluids' },
+ { name: 'Blood products', desc: 'Blood transfusion or blood product therapy' },
+ { name: 'Cardiac pacemaker', desc: 'Implantation or use of a cardiac pacemaker' },
+ { name: 'Vasopressors', desc: 'Blood-pressure-raising medications' },
+ { name: 'Specialised treatments', desc: 'Chemotherapy, dialysis, and other specialised treatments' },
+ { name: 'Antibiotics', desc: 'Medications to treat infection' },
+ ];
+
+const conditions = isZh
+ ? [
+ { title: '末期疾病', desc: '醫生確認病情不可逆轉，並且在合理預計下死亡即將來臨。' },
+ { title: '持續植物人狀況／不可逆轉昏迷', desc: '病人失去意識，沒有恢復的可能。' },
+ { title: '其他晚期不可逆轉生存受限疾病', desc: '例如晚期認知障礙症、末期器官衰竭（心、肺、腎、肝）等。' },
+ ]
+ : [
+ { title: 'Terminal illness', desc: 'Doctor confirms the condition is irreversible and death is reasonably foreseeable.' },
+ { title: 'PVS / irreversible coma', desc: 'Loss of consciousness with no realistic prospect of recovery.' },
+ { title: 'Other advanced irreversible conditions', desc: 'E.g. advanced dementia or end-stage organ failure.' },
+ ];
+
+const signReqs = isZh
+ ? [
+ { title: '年齡', desc: '年滿 18 歲' },
+ { title: '精神能力', desc: '簽署時必須精神健全、有能力理解 AMD 的意義' },
+ { title: '自願', desc: '出於個人意願，不受他人壓力' },
+ { title: '知情', desc: '簽署前必須與醫生深入討論各項維持生命治療的意義' },
+ ]
+ : [
+ { title: 'Age', desc: '18 years or older' },
+ { title: 'Capacity', desc: 'Mentally competent and able to understand the AMD' },
+ { title: 'Voluntary', desc: 'Signed of your own free will, without pressure' },
+ { title: 'Informed', desc: 'Discuss life-sustaining treatments in depth with a doctor first' },
+ ];
+
+const steps = isZh
+ ? [
+ { title: 'WhatsApp 諮詢', desc: '聯絡我們，醫生會先解答你的問題，確認是否適合訂立 AMD。' },
+ { title: '醫生上門評估', desc: '醫生到家中進行精神能力評估（Mental Capacity Assessment），確保你理解 AMD 的內容。' },
+ { title: '簽署文件', desc: '本人在兩名見證人面前簽署；第一位必須是香港註冊醫生，第二位為任何成年人（不得為遺產受益人）。' },
+ { title: '保管文件', desc: '正本由你保管；建議讓信任的家人知道文件位置。可依五種法定方式隨時撤銷。' },
+ ]
+ : [
+ { title: 'WhatsApp consultation', desc: 'Contact us — a doctor answers your questions and confirms suitability.' },
+ { title: 'Doctor home assessment', desc: 'Mental capacity assessment at home to ensure you understand the AMD.' },
+ { title: 'Sign the document', desc: 'Sign before two witnesses; one must be a registered doctor. The second must not be a beneficiary of your estate.' },
+ { title: 'Keep the document', desc: 'You keep the original; tell trusted family where it is. Revocable anytime while competent via five statutory methods.' },
+ ];
+
+const euthanasiaRows = isZh
+ ? [
+ ['目的', '拒絕接受治療', '主動終結生命'],
+ ['誰執行', '醫生停止或不開始治療', '醫生注射藥物終結生命'],
+ ['香港法律', '✅ 合法（2026年7月生效）', '❌ 違法'],
+ ['場景', '末期病、植物人等', '不論病情'],
+ ['結果', '自然死亡', '人為終結'],
+ ]
+ : [
+ ['Purpose', 'Refuse treatment', 'Actively end life'],
+ ['Who acts', 'Doctor stops / withholds treatment', 'Doctor administers lethal medication'],
+ ['HK law', '✅ Lawful (from July 2026)', '❌ Illegal'],
+ ['Context', 'Terminal illness, PVS, etc.', 'Regardless of condition'],
+ ['Outcome', 'Natural death', 'Artificial ending of life'],
+ ];
+
+const audiences = isZh
+ ? ['末期病人 — 希望在家離世，不想在醫院被急救', '長者 — 想提前為晚年做準備', '認知障礙症早期患者 — 趁還有能力時訂立', '長期病患者 — 心臟病、腎衰竭、癌症等', '注重規劃的人 — 想讓家人不用為醫療決定而煩惱', '任何年滿18歲的人 — 你永遠不知道明天會發生什麼']
+ : ['Terminal patients — prefer home death, not hospital CPR', 'Older adults — plan ahead for later life', 'Early dementia — while still able', 'Chronic illness — heart, kidney, cancer, etc.', 'Planners — spare family hard decisions', 'Anyone 18+ — you never know what tomorrow brings'];
+
+const faqs = isZh
+ ? [
+ { q: 'AMD 與遺囑（平安紙）有什麼分別？', a: 'AMD 處理醫療決定。遺囑處理財產分配。兩者有各自的法律基礎，可以分開簽署。' },
+ { q: '簽署 AMD 後可以改嗎？', a: '可以。只要你精神健全，可以依五種法定方式隨時撤銷：① 書面撤銷（紙本或電子）② 簽署標準表格第 5 部 ③ 燒毀/撕毀/劃掉並每頁簽署 ④ 成年見證人在場下口頭或非語言表達 ⑤ 醫健通電子撤銷（功能啟用後）。撤銷必須在仍有精神能力時進行。' },
+ { q: '在外地簽署的 AMD 在香港有效嗎？', a: '如果符合《條例》的條件，在外地簽署的 AMD 在香港也有效。但建議在香港重新簽署以確保無法律風險。' },
+ { q: '我不識字，可以簽 AMD 嗎？', a: '可以。醫生會詳細解釋內容，你可以在見證人面前用指模或標記簽署（具體安排視乎法律要求）。' },
+ { q: 'AMD 費用多少？', a: '醫生上門服務收費透明，請 WhatsApp 查詢或參考收費頁面。' },
+ { q: '「慎入易出」：如何撤銷預設醫療指示？', a: '條例採用「審慎訂立、簡易撤銷」原則。撤銷方法包括：① 書面撤銷 ② 口頭撤銷——在至少一名成年見證人在場下，以口頭方式撤銷 ③ 銷毀——由訂立者本人，或在他指示下由另一名成年人在場銷毀。訂立不容易（要見證人、要醫生），撤銷卻很簡單——確保你不會被困在一份已不合心意的文件裡。' },
+ { q: '條例對醫護、施救者和家人有什麼保障？', a: '只要真誠地按照有效的 AMD / DNACPR 行事，條例為醫護人員、施救者（包括非專業的旁觀者）和家屬提供法律保障。反之，故意阻礙執行有效指示的行為，可能負上刑事責任。' },
+ { q: '我訂立了指示，家人不同意怎麼辦？', a: '你的意願優先。條例的精神是尊重個人自主——這是你的生命、你的選擇。即使家人有不同意見，有效訂立的指示仍然具有法律效力，醫護會以指示為準。我們建議訂立時與家人坦誠溝通，減少日後衝突。' },
+ ]
+ : [
+ { q: 'How is an AMD different from a will?', a: 'An AMD covers medical decisions. A will covers assets. They are separate legal instruments and can be signed independently.' },
+ { q: 'Can I change my AMD later?', a: 'Yes. While mentally competent you may revoke via five statutory methods: ① written (paper or electronic) ② signing Part 5 of the standard form ③ destroying/crossing out and signing each page ④ oral/non-verbal expression before an adult witness ⑤ eHealth electronic revocation (when available). Revocation requires mental capacity.' },
+ { q: 'Is an overseas AMD valid in Hong Kong?', a: 'It may be if it meets Ordinance requirements. Re-signing in Hong Kong is recommended to reduce legal risk.' },
+ { q: 'Can I sign if I cannot read?', a: 'Yes. A doctor will explain the content; you may sign by mark/fingerprint before witnesses as permitted by law.' },
+ { q: 'How much does it cost?', a: 'Home-visit fees are transparent — WhatsApp us or see the pricing page.' },
+ { q: 'How do I revoke an AMD? — "Careful to sign, easy to revoke"', a: 'The Ordinance follows a "careful to establish, easy to revoke" principle. Revocation methods include: ① written revocation ② oral revocation — before at least one adult witness ③ destruction — by the person who made the directive, or by another adult at their direction. Signing takes effort (witnesses, a doctor); revoking is simple — so you are never trapped in a document that no longer reflects your wishes.' },
+ { q: 'What legal protection does the Ordinance give clinicians, rescuers and family?', a: 'Anyone who acts in good faith in accordance with a valid AMD or DNACPR — healthcare staff, rescuers (including untrained bystanders), and family members — is protected by the Ordinance. Conversely, deliberately obstructing a valid directive may carry criminal liability.' },
+ { q: 'What if my family disagrees with my AMD?', a: 'Your wishes come first. The Ordinance respects personal autonomy — this is your life and your choice. Even if family members disagree, a validly made directive retains legal effect and clinicians will follow it. We recommend open family discussion when you sign, to reduce conflict later.' },
+ ];
+---
+
+<Layout title={pageTitle} description={pageDesc}>
+  {(() => {
+    const faqSchema = [
+      { q: isZh ? '「慎入易出」：如何撤銷預設醫療指示？' : 'How do I revoke an AMD? — "Careful to sign, easy to revoke"', a: isZh ? '條例採用「審慎訂立、簡易撤銷」原則。撤銷方法包括：① 書面撤銷 ② 口頭撤銷——在至少一名成年見證人在場下，以口頭方式撤銷 ③ 銷毀——由訂立者本人，或在他指示下由另一名成年人在場銷毀。' : 'The Ordinance follows a "careful to establish, easy to revoke" principle. Revocation methods include: ① written revocation ② oral revocation before at least one adult witness ③ destruction by the person who made the directive, or by another adult at their direction.' },
+      { q: isZh ? '條例對醫護、施救者和家人有什麼保障？' : 'What legal protection does the Ordinance give clinicians, rescuers and family?', a: isZh ? '只要真誠地按照有效的 AMD / DNACPR 行事，條例為醫護人員、施救者（包括非專業的旁觀者）和家屬提供法律保障。反之，故意阻礙執行有效指示的行為，可能負上刑事責任。' : 'Anyone who acts in good faith in accordance with a valid AMD or DNACPR — healthcare staff, rescuers (including untrained bystanders), and family members — is protected by the Ordinance. Conversely, deliberately obstructing a valid directive may carry criminal liability.' },
+      { q: isZh ? '我訂立了指示，家人不同意怎麼辦？' : 'What if my family disagrees with my AMD?', a: isZh ? '你的意願優先。條例的精神是尊重個人自主——這是你的生命、你的選擇。即使家人有不同意見，有效訂立的指示仍然具有法律效力，醫護會以指示為準。' : 'Your wishes come first. The Ordinance respects personal autonomy — this is your life and your choice. Even if family members disagree, a validly made directive retains legal effect and clinicians will follow it.' },
+    ];
+    return (
+      <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqSchema.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) })}></script>
+    );
+  })()}
+  <section class="pt-32 pb-20 px-6 md:px-12 bg-surface">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight text-primary">
+        {isZh ? '什麼是預設醫療指示（AMD）？' : 'What is an Advance Medical Directive (AMD)?'}
+      </h1>
+      <p class="text-lg md:text-xl text-on-surface-variant leading-relaxed max-w-3xl mx-auto">
+        {isZh
+          ? '讓你的醫療意願，即使無法開口也能被尊重。2026年7月生效的新法例，讓你可以提前決定——當自己昏迷或末期病時，接受或不接受哪些維持生命治療。'
+          : 'Your medical wishes, respected even when you cannot speak. From July 2026, new Hong Kong law lets you decide in advance which life-sustaining treatments you accept or refuse.'}
+      </p>
+    </div>
+  </section>
+
+  <!-- Sticky Table of Contents -->
+  <nav class="sticky top-0 z-40 bg-surface/95 backdrop-blur border-b border-outline-variant shadow-sm" aria-label="Table of contents">
+    <div class="max-w-4xl mx-auto px-6 py-3">
+      <div class="flex items-center gap-4 overflow-x-auto whitespace-nowrap text-sm md:text-base">
+        <span class="font-bold text-primary shrink-0">
+          {isZh ? '目錄：' : 'On this page: '}
+        </span>
+        {(isZh
+          ? [
+            { h: 'what-is-amd', t: 'AMD 是什麼' },
+            { h: 'legal-framework', t: '法律依據' },
+            { h: 'importance', t: '重要性' },
+            { h: 'who-can-sign', t: '誰可簽署' },
+            { h: 'signing-process', t: '流程' },
+            { h: 'how-to-write', t: '如何撰寫' },
+            { h: 'family-communication', t: '家庭溝通' },
+            { h: 'faq', t: 'FAQ' },
+          ]
+          : [
+            { h: 'what-is-amd', t: 'What is it' },
+            { h: 'legal-framework', t: 'Legal' },
+            { h: 'importance', t: 'Why it matters' },
+            { h: 'who-can-sign', t: 'Eligibility' },
+            { h: 'signing-process', t: 'Process' },
+            { h: 'how-to-write', t: 'How to write' },
+            { h: 'family-communication', t: 'Family' },
+            { h: 'faq', t: 'FAQ' },
+          ]
+        ).map((item) => (
+          <a href={`#${item.h}`} class="no-underline hover:underline font-medium text-secondary shrink-0">
+            {item.t}
+          </a>
+        ))}
+      </div>
+    </div>
+  </nav>
+
+
+  <section id="what-is-amd" class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-4xl mx-auto space-y-6 text-lg leading-relaxed text-on-surface">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary">
+        {isZh ? '簡單講：AMD 是什麼？' : 'Simply put: what is an AMD?'}
+      </h2>
+      <p>
+        {isZh
+          ? '預設醫療指示（Advance Medical Directive，簡稱 AMD）是一份法律文件，讓你在精神健全、有自主能力的時候，預先寫低：如果將來因為末期疾病、持續植物人狀況或其他指定情況而失去表達能力，你拒絕接受哪些維持生命治療。'
+          : 'An Advance Medical Directive (AMD) is a legal document that lets you, while mentally competent, state in advance which life-sustaining treatments you refuse if you later lose capacity due to a terminal illness, persistent vegetative state, or other specified conditions. In plain terms, it is your living will and your end-of-life instructions — written now, honoured later.'}
+      </p>
+      <p class="font-bold text-primary text-xl">
+        {isZh ? '「如果將來我無得救，請唔好幫我吊命。」' : '"If I cannot be saved, please do not keep me alive by machines."'}
+      </p>
+      <p>
+        {isZh
+          ? 'AMD 不是遺囑（平安紙），不是安樂死，也不是放棄治療。AMD 是讓你的醫療意願——在你自己無法開口時——依然能夠被尊重。'
+          : 'An AMD is not a will, not euthanasia, and not abandoning care. It ensures your medical wishes are still respected when you cannot speak.'}
+      </p>
+    </div>
+  </section>
+
+  <section id="background" class="py-24 px-6 md:px-12 bg-surface">
+    <div class="max-w-4xl mx-auto space-y-6 text-lg leading-relaxed">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary">
+        {isZh ? 'AMD 的背景：為什麼現在需要知道？' : 'Why this matters now'}
+      </h2>
+      <p class="text-on-surface">
+        {isZh
+          ? '2024年11月20日，香港立法會通過了《維持生命治療的預作決定條例》（第651章），並將於 2026年7月31日正式生效。'
+          : 'On 20 November 2024, the Legislative Council passed the Advance Decision on Life-sustaining Treatment Ordinance (Cap. 651), effective 31 July 2026.'}
+      </p>
+      <ul class="list-none pl-0 space-y-3">
+        {(isZh
+          ? ['將 AMD 從普通法提升到成文法保障', '為醫生和簽署人提供明確的法律框架', '讓預設醫療指示在香港有明確的法律效力']
+          : ['Elevates AMD from common law to statutory protection', 'Gives doctors and signatories a clear legal framework', 'Confirms the legal effect of AMDs in Hong Kong']
+        ).map((item) => (
+          <li class="flex items-start gap-3">
+            <span class="icon-wrapper text-primary shrink-0" set:html={icons.check_circle} />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="text-on-surface-variant">
+        {isZh
+          ? '在此之前，香港的 AMD 處於法律灰色地帶，醫生執行時有法律責任的顧慮。新條例解決了這個問題。'
+          : 'Previously AMDs sat in a legal grey area; doctors worried about liability. The new Ordinance addresses that.'}
+      </p>
+    </div>
+  </section>
+
+  <section id="treatments" class="py-24 px-6 md:px-12 bg-surface">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary text-center mb-6">
+        {isZh ? 'AMD 涵蓋什麼治療？' : 'What treatments can an AMD cover?'}
+      </h2>
+      <p class="max-w-2xl mb-12 mx-auto text-center text-lg text-on-surface-variant">
+        {isZh
+          ? 'AMD 只針對維持生命治療（Life-sustaining Treatment）。你可以拒絕以下全部或部分治療：'
+          : 'An AMD only covers life-sustaining treatments. You may refuse some or all of the following:'}
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {treatments.map((t) => (
+          <div class="rounded-2xl p-6 bg-surface-container border border-outline-variant">
+            <h3 class="font-bold text-lg text-primary mb-2">{t.name}</h3>
+            <p class="text-base text-on-surface-variant leading-relaxed">{t.desc}</p>
+          </div>
+        ))}
+      </div>
+      <p class="mt-10 text-center text-on-surface-variant">
+        {isZh
+          ? '重要：AMD 不代表「乜都唔醫」——你仍然會接受基本照顧（口腔餵食、餵水、協助進食）同紓緩治療（止痛、處理症狀、心理支援等），以保持生活質素。條例訂明，拒絕基本照顧或紓緩治療、或要求安樂死的指令均屬無效。'
+          : 'Important: an AMD does not mean "no care at all" — you still receive basic care (oral feeding, water, assisted eating) and palliative care (pain relief, symptom control, support) to protect quality of life. The Ordinance states that any directive refusing basic/palliative care or requesting euthanasia is invalid.'}
+      </p>
+    </div>
+  </section>
+
+  <section id="trigger-conditions" class="py-24 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary text-center mb-6">
+        {isZh ? '三種觸發 AMD 生效的情況' : 'Three situations that activate an AMD'}
+      </h2>
+      <p class="max-w-2xl mb-16 mx-auto text-center text-lg text-on-surface-variant">
+        {isZh
+          ? '只有在以下三種情況，醫生才會執行你的 AMD。暫時昏迷或可逆轉病情下，AMD 不會生效。'
+          : 'An AMD only takes effect in these three situations. Temporary or reversible conditions do not activate it.'}
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {conditions.map((c, i) => (
+          <div class="rounded-3xl p-8 bg-surface-container border border-outline-variant">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 flex items-center justify-center rounded-2xl text-white text-xl font-bold bg-primary">{i + 1}</div>
+              <h3 class="text-xl font-bold text-on-surface">{c.title}</h3>
+            </div>
+            <p class="leading-relaxed text-on-surface-variant">{c.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="who-can-sign" class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-12">
+        {isZh ? '誰可以簽署 AMD？' : 'Who can sign an AMD?'}
+      </h2>
+      <div class="space-y-4">
+        {signReqs.map((r) => (
+          <div class="flex items-start gap-5 p-6 rounded-2xl bg-surface border border-outline-variant">
+            <span class="icon-wrapper text-2xl text-secondary shrink-0" set:html={icons.person_check} />
+            <div>
+              <h3 class="font-bold text-xl text-primary mb-1">{r.title}</h3>
+              <p class="text-on-surface-variant">{r.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="signing-process" class="py-24 px-6 md:px-12">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-12">
+        {isZh ? 'AMD 的簽署流程' : 'How signing works'}
+      </h2>
+      <div class="space-y-6">
+        {steps.map((s, i) => (
+          <div class="flex gap-6 items-start rounded-2xl p-6 bg-surface-container border border-outline-variant">
+            <div class="w-12 h-12 shrink-0 rounded-xl flex items-center justify-center text-white font-bold bg-primary">{i + 1}</div>
+            <div>
+              <h3 class="text-xl font-bold mb-2 text-on-surface">{s.title}</h3>
+              <p class="leading-relaxed text-on-surface-variant">{s.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p class="mt-8 text-center">
+        <a href={`${prefix}/how-it-works`} class="font-bold no-underline hover:underline text-secondary">
+          {isZh ? '睇完整預約流程 →' : 'See the full booking process →'}
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section id="amd-vs-euthanasia" class="py-24 px-6 md:px-12 bg-surface">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary text-center mb-6">
+        {isZh ? 'AMD 與安樂死有什麼分別？' : 'AMD vs euthanasia'}
+      </h2>
+      <p class="mb-12 text-center text-lg text-on-surface-variant">
+        {isZh ? '這是最多人誤解的地方。' : 'This is the most common misunderstanding.'}
+      </p>
+      <div class="overflow-x-auto rounded-2xl border border-outline-variant">
+        <table class="w-full text-left">
+          <thead class="bg-primary">
+            <tr>
+              <th class="px-6 py-4 text-white font-bold text-sm">{isZh ? '項目' : 'Aspect'}</th>
+              <th class="px-6 py-4 text-white font-bold text-sm">{isZh ? '預設醫療指示 (AMD)' : 'AMD'}</th>
+              <th class="px-6 py-4 text-white font-bold text-sm">{isZh ? '安樂死' : 'Euthanasia'}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {euthanasiaRows.map((row, i) => (
+              <tr class:list={['border-b border-outline-variant', i % 2 === 0 ? 'bg-surface-container-low' : 'bg-transparent']}>
+                <td class="px-6 py-4 font-semibold text-on-surface">{row[0]}</td>
+                {[row[1], row[2]].map((cell) => {
+                  const c = parseMark(cell);
+                  return (
+                    <td class="px-6 py-4 text-on-surface-variant">
+                      {c.kind ? (
+                        <span class="inline-flex items-start gap-2">
+                          <span
+                            class:list={[
+                              'mt-0.5 inline-flex items-center justify-center shrink-0 w-[1.15em] h-[1.15em] rounded-[3px] text-white',
+                              c.kind === 'yes' ? 'bg-green-500' : 'bg-red-500',
+                            ]}
+                            aria-hidden="true"
+                          >
+                            {c.kind === 'yes' ? (
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                            ) : (
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                            )}
+                          </span>
+                          <span>{c.text}</span>
+                        </span>
+                      ) : (
+                        cell
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-8 text-center text-lg font-medium text-primary">
+        {isZh
+          ? 'AMD 不是安樂死，也不是「幫你去死」。AMD 是「讓你可以自然地走，不被機器吊住。」'
+          : 'An AMD is not euthanasia. It allows a natural death without being kept alive by machines.'}
+      </p>
+    </div>
+  </section>
+
+  <section id="who-should-consider" class="py-24 px-6 md:px-12">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-12">
+        {isZh ? '誰應該考慮簽署 AMD？' : 'Who should consider an AMD?'}
+      </h2>
+      <ul class="list-none pl-0 space-y-4">
+        {audiences.map((item) => (
+          <li class="flex items-start gap-3 text-lg text-on-surface">
+            <span class="icon-wrapper text-primary shrink-0 mt-1" set:html={icons.arrow_right} />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-10 p-6 rounded-2xl text-center text-primary bg-surface-container border border-outline-variant font-medium">
+        {isZh ? '💡 一句話記住：AMD 不是寫給自己，是寫給將來無法說話的自己。' : '💡 Remember: an AMD is written for the future you who cannot speak.'}
+      </p>
+    </div>
+  </section>
+
+  <section id="legal-framework" class="py-24 px-6 md:px-12">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-8">
+        {isZh ? '預設醫療指示的法律依據' : 'Legal Framework for Advance Medical Directives in Hong Kong'}
+      </h2>
+      <p class="text-lg leading-relaxed text-on-surface mb-6">
+        {isZh
+          ? '《維持生命治療的預作決定條例》（第651章）於2024年11月20日獲立法會通過，2026年7月31日正式生效。條例以成文法形式確認 AMD 的法律效力，訂明簽署條件、見證人要求、撤銷方式，並為真誠執行指示的醫護人員、施救者及家屬提供法律保障。'
+          : 'The Advance Decision on Life-sustaining Treatment Ordinance (Cap. 651) was passed by the Legislative Council on 20 November 2024 and took effect on 31 July 2026. It gives AMDs statutory legal effect, sets out signing conditions and witness requirements, prescribes revocation methods, and protects clinicians, rescuers and family members who act in good faith. The Ordinance is part of the Government\'s wider advance care planning framework, supported by Hospital Authority guidelines and professional bodies.'}
+      </p>
+      <p class="text-lg leading-relaxed text-on-surface-variant">
+        {isZh
+          ? '簽署 AMD 前，建議諮詢熟悉條例的醫生或律師，確保文件符合法律要求，並了解醫療團隊在執行時的角色與責任。'
+          : 'Before signing, we recommend consulting a doctor or lawyer familiar with the Ordinance to ensure your directive meets legal requirements and to understand the role of your healthcare team. A valid AMD requires your informed consent — you must understand each treatment and its consequences before stating your instructions.'}
+      </p>
+    </div>
+  </section>
+
+  <section id="importance" class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-8">
+        {isZh ? '為什麼 AMD 對你同家人咁重要？' : 'Why an AMD Matters for You and Your Family'}
+      </h2>
+      <p class="text-lg leading-relaxed text-on-surface mb-6">
+        {isZh
+          ? '當你因為意外、中風或認知障礙而失去表達能力，家人可能要喺最痛苦嘅時刻，為你作出維持生命治療嘅決定 — 心肺復甦、插喉、人工呼吸機，每一項都係艱難嘅抉擇。AMD 嘅價值，就係將呢個決策重擔從家人肩上卸下：決定一早寫低，家人只需執行，唔使自責。冇 AMD 嘅情況下，醫院嘅緊急醫療團隊會按標準程序全力急救 — 而呢個可能唔係你想要嘅結果。'
+          : 'If an accident, stroke or dementia leaves you unable to communicate, your family may face agonising decisions about CPR, intubation and ventilators at the worst possible moment. An AMD lifts that burden: the decision is already written down, so your family simply follows your wishes without guilt. Without an AMD, hospital emergency teams follow standard resuscitation protocols — which may not be what you wanted.'}
+      </p>
+      <ul class="list-none pl-0 space-y-4">
+        {(isZh
+          ? ['保障你的自主權與醫療意願', '減少家人之間因醫療決定而起嘅分歧與壓力', '確保醫護團隊清楚知道你的照顧同護理偏好', '避免不必要的急救與延長死亡過程', '保障你拒絕治療嘅權利，免受機構或他人左右'
+          ]
+          : ['Protects your autonomy and medical wishes', 'Reduces family conflict and stress over treatment decisions', 'Ensures healthcare professionals know your care and nursing preferences', 'Avoids unwanted resuscitation and prolonged dying', 'Protects your right to refuse treatment, free from institutional or external pressure'
+          ]
+        ).map((item) => (
+          <li class="flex items-start gap-3 text-lg text-on-surface">
+            <span class="icon-wrapper text-primary shrink-0 mt-1" set:html={icons.check_circle} />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="how-to-write" class="py-24 px-6 md:px-12">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-8">
+        {isZh ? '如何撰寫有效的預設醫療指示？' : 'How to Write an Effective Advance Medical Directive'}
+      </h2>
+      <div class="space-y-4">
+        {(isZh
+          ? [
+            { t: '與醫生深入討論', d: '了解各項維持生命治療嘅意義、利弊及後果，確保指示內容建基於準確資訊。' },
+            { t: '用標準表格', d: '使用條例訂明嘅標準表格（表格1），內容包括個人資料、治療指示、訂立人及見證人簽署部分。' },
+            { t: '清晰具體', d: '寫明拒絕邊啲治療（如心肺復甦術、人工輔助呼吸），避免含糊用語影響執行。' },
+            { t: '通知家人與醫護', d: '將正本位置告知信任嘅家人，並考慮將副本交俾家庭醫生或登記喺醫健通。' },
+          ]
+          : [
+            { t: 'Discuss with your doctor', d: 'Understand the meaning, benefits and consequences of each life-sustaining treatment so your directive is based on accurate information.' },
+            { t: 'Use the standard form', d: 'Use the statutory standard form (Form 1), covering personal details, treatment instructions, and signature sections for the maker and witnesses.' },
+            { t: 'Be specific', d: 'State exactly which treatments you refuse (e.g. CPR, mechanical ventilation) — avoid vague wording that could affect enforcement.' },
+            { t: 'Tell family and clinicians', d: 'Let trusted family know where the original is kept, and consider giving a copy to your family doctor or registering it in eHealth.' },
+          ]
+        ).map((item) => (
+          <div class="flex gap-4 items-start rounded-2xl p-6 bg-surface-container border border-outline-variant">
+            <span class="icon-wrapper text-2xl text-primary shrink-0" set:html={icons.arrow_right} />
+            <div>
+              <h3 class="font-bold text-xl text-on-surface mb-1">{item.t}</h3>
+              <p class="leading-relaxed text-on-surface-variant">{item.d}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="family-communication" class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-8">
+        {isZh ? '與家人溝通：訂立 AMD 唔係一個人的事' : 'Family Communication: An AMD Is Not Just About You'}
+      </h2>
+      <p class="text-lg leading-relaxed text-on-surface mb-6">
+        {isZh
+          ? 'AMD 最終由醫護團隊執行，但家人係你嘅代理人 — 佢哋會喺你無法表達時，同醫生確認你的意願。訂立 AMD 時，同家人坦誠討論你嘅決定同背後原因，可以大幅減少日後嘅誤解同衝突。老友宅醫嘅醫生上門簽署服務，歡迎家人一齊參與，喺專業醫護指導下完成討論。'
+          : 'Clinicians ultimately implement your AMD, but your family act as your voice — they will confirm your wishes with the medical team when you cannot speak. Discussing your decisions and the reasons behind them with family when you sign greatly reduces later misunderstanding and conflict. Our home-visit signing service welcomes family members to join the discussion under professional guidance.'}
+      </p>
+      <p class="text-lg font-medium text-primary">
+        {isZh ? '💡 記住：訂立 AMD 係一份送俾家人嘅禮物 — 佢哋唔使再估你想點。' : '💡 Remember: an AMD is a gift to your family — they never have to guess what you would have wanted.'}
+      </p>
+    </div>
+  </section>
+
+  <section id="healthcare-team" class="py-24 px-6 md:px-12">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-8">
+        {isZh ? '醫療團隊的角色與責任' : 'Roles and Responsibilities of Healthcare Professionals'}
+      </h2>
+      <div class="space-y-4">
+        {(isZh
+          ? [
+            { t: '確認指示有效性', d: '執行前，醫師會確認 AMD 是否符合法律要求、有冇被撤銷，以及病人是否屬於條例訂明嘅情況。' },
+            { t: '與家屬溝通', d: '醫生會向家屬解釋指示內容同執行安排，確保各方理解，並與護理團隊協調後續照護。' },
+            { t: '尊重與保障', d: '只要真誠按有效指示行事，醫護人員、施救者同家屬均受條例保障，免受法律追究。' },
+          ]
+          : [
+            { t: 'Verify the directive', d: 'Before acting, clinicians confirm the AMD is valid, unrevoked, and the patient falls within the statutory situations.' },
+            { t: 'Communicate with family', d: 'Doctors explain the directive\'s contents and implementation to the family so everyone understands, coordinating ongoing care with the nursing team.' },
+            { t: 'Respect and protection', d: 'Those who act in good faith on a valid directive — clinicians, rescuers and family — are protected by the Ordinance.' },
+            { t: 'Wider healthcare network', d: 'Your attending physician, family doctors, hospitals and the Hospital Authority all play a role: they hold your records, honour your directive, and can guide families through the process.' },
+          ]
+        ).map((item) => (
+          <div class="flex gap-4 items-start rounded-2xl p-6 bg-surface border border-outline-variant">
+            <span class="icon-wrapper text-2xl text-secondary shrink-0" set:html={icons.person_check} />
+            <div>
+              <h3 class="font-bold text-xl text-on-surface mb-1">{item.t}</h3>
+              <p class="leading-relaxed text-on-surface-variant">{item.d}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {!isZh && (
+    <section class="py-24 px-6 md:px-12">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-8">
+          Recognition of Advance Medical Directives from Other Jurisdictions
+        </h2>
+        <p class="text-lg leading-relaxed text-on-surface mb-6">
+          If you signed an advance directive overseas (e.g. a living will in the UK, a healthcare proxy in the US, or an advance care directive in Australia), it may be recognised in Hong Kong if it meets the requirements of Cap. 651. However, because statutory requirements — witnesses, format and scope — differ across jurisdictions, we strongly recommend re-signing a Hong Kong AMD to avoid legal uncertainty at the moment it matters most.
+        </p>
+        <p class="text-lg leading-relaxed text-on-surface-variant">
+          Our doctors can review an overseas directive during the home assessment and advise whether re-signing is advisable in your case.
+        </p>
+      </div>
+    </section>
+  )}
+
+  {!isZh && (
+
+  <section class="py-24 px-6 md:px-12 bg-surface-container">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-8">
+          Ethical Considerations in Advance Care Planning
+        </h2>
+        <p class="text-lg leading-relaxed text-on-surface mb-6">
+          Advance care planning rests on four ethical pillars: respect for patient autonomy, beneficence (acting in the patient's best interests), non-maleficence (avoiding harm such as futile resuscitation), and justice. An AMD is the practical expression of autonomy — but ethics also require that the directive reflects informed, voluntary, current wishes.
+        </p>
+        <p class="text-lg leading-relaxed text-on-surface-variant">
+          That is why the Ordinance requires an in-depth discussion with a doctor before signing, and why clinicians must confirm capacity and the absence of pressure at the time of signing. An AMD is never about withholding care — basic care and palliative treatment continue, ensuring dignity throughout.
+        </p>
+      </div>
+    </section>
+  )}
+
+  <section id="faq" class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-center mb-12 text-primary">
+        {isZh ? '常見問題' : 'FAQ'}
+      </h2>
+      <div class="space-y-4">
+        {faqs.map((f) => (
+          <details class="group rounded-2xl border border-outline-variant overflow-hidden bg-surface">
+            <summary class="cursor-pointer list-none flex items-center justify-between gap-4 p-6 font-bold text-primary">
+              <span>{f.q}</span>
+              <span class="transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-open:rotate-180 text-primary shrink-0" set:html={icons.expand_more} />
+            </summary>
+            <p class="px-6 pb-6 text-on-surface-variant leading-relaxed">{f.a}</p>
+          </details>
+        ))}
+      </div>
+      <p class="text-center mt-8">
+        <a href={`${prefix}/faq`} class="font-bold no-underline hover:underline text-secondary">
+          {isZh ? '睇更多常見問題 →' : 'More FAQs →'}
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 text-white text-center bg-primary">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide mb-6">
+        {isZh ? '準備好簽署 AMD？' : 'Ready to sign your AMD?'}
+      </h2>
+      <p class="text-lg mb-10 text-white/80 leading-relaxed">
+        {isZh
+          ? '老友宅醫醫生團隊為您提供專業上門簽署服務，30分鐘完成。WhatsApp 即時諮詢。'
+          : 'Our DoctorNow team provides professional home-visit signing — about 30 minutes. WhatsApp us anytime.'}
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href={bookUrl}
+          target="_blank"
+          rel="noopener"
+          class="inline-block text-lg font-bold px-8 py-4 rounded-full no-underline hover:opacity-90 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] bg-secondary text-white"
+        >
+          WhatsApp {isZh ? '即時諮詢' : 'Consult Now'}
+        </a>
+        <a
+          href={`${prefix}/pricing`}
+          class="inline-block text-lg font-bold px-8 py-4 rounded-full no-underline hover:bg-white/10 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] text-white border border-white/30"
+        >
+          {isZh ? '查看收費 →' : 'View Pricing →'}
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

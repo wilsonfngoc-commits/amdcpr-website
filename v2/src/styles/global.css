@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@theme {
+  /* Original DESIGN.md palette — matches attached homepage mockup */
+  /* Warm sand ladder — distinct so alternating sections read clearly */
+  --color-surface: #FAF6F2;
+  --color-surface-dim: #E6D7C8;
+  --color-surface-bright: #FAF6F2;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #F7F3EB;
+  --color-surface-container: #EFE9DE;
+  --color-surface-container-high: #E6D7C8;
+  --color-surface-container-highest: #dfd6c9;
+  --color-on-surface: #4A4036;
+  --color-on-surface-variant: #7A6F64;
+  --color-outline: #7A6F64;
+  --color-outline-variant: #E6D7C8;
+  /* moss-green */
+  --color-primary: #4F6B5E;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #8aa59a;
+  --color-on-primary-container: #f5fff9;
+  --color-primary-dim: #4F6B5E;
+  /* terracotta */
+  --color-secondary: #8F4A42;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #c98a83;
+  --color-on-secondary-container: #3d1f1c;
+  --color-background: #FAF6F2;
+  --color-on-background: #4A4036;
+
+  --color-text-main: #4A4036;
+  --color-text-muted: #7A6F64;
+
+  --font-sans: 'Quicksand', 'Noto Sans TC', system-ui, sans-serif;
+  --font-chinese: 'Noto Sans TC', 'Noto Sans SC', sans-serif;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-2xl: 2rem;
+  --radius-3xl: 3rem;
+}
+
+html { overflow-x: clip; }
+body { overflow-x: clip; background-color: var(--color-surface); color: var(--color-on-surface); }
+
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+
+.zh-text,
+.zh-text-flow {
+  font-family: var(--font-chinese);
+  line-height: 1.8;
+  letter-spacing: 0.04em;
+}
+
+:lang(zh-HK) body,
+:lang(zh-HK) {
+  font-family: var(--font-sans);
+  line-height: 1.8;
+}
+
+.icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+[set\:html] svg,
+span.icon-wrapper svg {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.organic-shape {
+  border-radius: 60% 40% / 60% 30%;
+  transition: border-radius 0.5s ease;
+}
+
+.lane-card {
+  background-color: #F5EBE0;
+  border-radius: 32px;
+  padding: 32px;
+  border: 1px solid rgba(230, 215, 200, 0.35);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.lane-card:hover {
+  transform: translateY(-8px);
+  background-color: #FAF6F2;
+  box-shadow: 0 20px 40px -10px rgba(79, 107, 94, 0.15);
+}
+.lane-card-accent {
+  background-color: rgba(79, 107, 94, 0.1);
+}
+.lane-card-accent:hover {
+  background-color: rgba(79, 107, 94, 0.14);
+}
+
+.section-gap { padding-top: 4rem; padding-bottom: 4rem; }
+@media (min-width: 768px) {
+  .section-gap { padding-top: 6rem; padding-bottom: 6rem; }
+}
+
+.step-line {
+  position: relative;
+}
+.step-line::before {
+  content: '';
+  position: absolute;
+  left: 28px;
+  top: 64px;
+  bottom: -32px;
+  width: 4px;
+  background: #E6D7C8;
+  border-radius: 2px;
+}
+.step-line:last-child::before {
+  display: none;
+}
+
+/* Tailwind Typography plugin for prose class */
+@plugin "@tailwindcss/typography";
+
+/* Prose typography — brand color overrides */
+.prose {
+  --tw-prose-body: var(--color-on-surface);
+  --tw-prose-headings: var(--color-primary);
+  --tw-prose-links: var(--color-secondary);
+  --tw-prose-bold: var(--color-on-surface);
+  --tw-prose-hr: var(--color-outline-variant);
+  --tw-prose-quotes: var(--color-on-surface-variant);
+  --tw-prose-quote-borders: var(--color-secondary);
+  --tw-prose-bullets: var(--color-secondary);
+}

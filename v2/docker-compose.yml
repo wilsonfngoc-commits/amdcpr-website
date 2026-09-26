@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  # PostgreSQL for production Strapi (optional)
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: amdcpr-postgres
+  #   environment:
+  #     POSTGRES_DB: amdcpr
+  #     POSTGRES_USER: amdcpr
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD:-change-me}
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+
+# volumes:
+#   pgdata:

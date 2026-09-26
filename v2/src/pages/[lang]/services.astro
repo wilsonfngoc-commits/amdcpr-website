@@ -1,0 +1,344 @@
+---
+export async function getStaticPaths() {
+ return [
+ { params: { lang: 'zh' } },
+ { params: { lang: 'en' } },
+ ];
+}
+import Layout from '../../layouts/Layout.astro';
+import { waUrlShort } from '../../lib/site';
+import { icons } from '../../lib/icons';
+
+const lang = Astro.params.lang || 'zh';
+const isZh = lang === 'zh';
+
+const pageTitle = isZh ? '服務介紹' : 'Our Services';
+const pageDesc = isZh
+ ? '老友宅醫 DoctorNow AMD 提供上門簽署預設醫療指示、AMD+EPA 組合、在家離世方案及 ACP 諮詢等服務。'
+ : 'DoctorNow AMD offers home-visit Advance Medical Directive signing, AMD+EPA combo, home death solutions, and ACP consultation services.';
+const h1 = isZh ? '服務介紹' : 'Our Services';
+const h1Sub = isZh
+ ? '我哋提供全面嘅臨終規劃服務，由註冊西醫團隊主理，讓你可以安心規劃人生最後一程。'
+ : 'We provide comprehensive end-of-life planning services, led by a team of registered doctors, so you can plan your final journey with peace of mind.';
+
+const servicesList = isZh
+ ? [
+ {
+ title: '上門簽署 AMD',
+ subtitle: '預設醫療指示',
+ desc: '由香港註冊西醫親自上門，喺你屋企完成 AMD 簽署。包括精神狀態評估、見證人安排、文件草擬。全程約 30 分鐘。',
+ features: ['醫生上門評估', '見證人安排', '文件草擬及核對', '正本交家屬保管'],
+ icon: 'assignment',
+ cta: 'WhatsApp 了解詳情',
+ },
+ {
+ title: 'AMD + EPA 組合',
+ subtitle: '預設醫療指示＋持久授權書',
+ desc: '一次過處理兩份重要文件。AMD 保障你嘅醫療意願，EPA 安排可信賴嘅人代你管理財務。醫生及律師團隊聯合支援。',
+ features: ['AMD 上門簽署', 'EPA 文件協助', '醫生及律師團隊', '組合優惠價'],
+ icon: 'description',
+ cta: 'WhatsApp 查詢組合',
+ },
+ {
+ title: '在家離世方案',
+ subtitle: 'Home Death Plan',
+ desc: '如果你選擇在家離世，我哋嘅醫生團隊可以提供上門善終服務。包括醫生上門簽發《死因證明書》，毋須入院。',
+ features: ['醫生上門善終', '死因證明書簽發', '臨終護理指導', '身後事安排支援'],
+ icon: 'home_heart',
+ cta: 'WhatsApp 查詢方案',
+ },
+ {
+ title: 'ACP 諮詢服務',
+ subtitle: '預設照顧計劃',
+ desc: '一對一專業諮詢，幫你同家人規劃臨終照顧方案。全面講解 AMD、DNACPR、EPA 嘅分別同應用，畀你做出最適合嘅決定。',
+ features: ['一對一顧問諮詢', '全面講解各文件', '個人化建議書', '家人溝通支援'],
+ icon: 'support_agent',
+ cta: 'WhatsApp 預約諮詢',
+ },
+ ]
+ : [
+ {
+ title: 'Home AMD Signing',
+ subtitle: 'Advance Medical Directive',
+ desc: 'An MCHK-registered doctor visits your home to complete the AMD signing. Includes mental capacity assessment, witness arrangement, and document drafting. Takes approximately 30 minutes.',
+ features: ['Doctor home assessment', 'Witness arrangement', 'Document drafting & verification', 'Original kept by family'],
+ icon: 'assignment',
+ cta: 'Inquire on WhatsApp',
+ },
+ {
+ title: 'AMD + EPA Combo',
+ subtitle: 'AMD & Enduring Power of Attorney',
+ desc: 'Handle two important documents at once. AMD protects your medical wishes; EPA appoints a trusted person to manage your finances. Supported by a joint doctor and lawyer team.',
+ features: ['AMD home signing', 'EPA document assistance', 'Doctor & lawyer team', 'Combo pricing'],
+ icon: 'description',
+ cta: 'Inquire about Combo',
+ },
+ {
+ title: 'Home Death Plan',
+ subtitle: 'End-of-life care at home',
+ desc: 'If you choose home death, our doctor team provides home-based end-of-life care. Includes on-site issuance of the Medical Certificate of Cause of Death — no hospital admission required.',
+ features: ['Doctor home visit', 'Death certificate issuance', 'End-of-life care guidance', 'After-death arrangement support'],
+ icon: 'home_heart',
+ cta: 'Inquire about Home Death',
+ },
+ {
+ title: 'ACP Consultation',
+ subtitle: 'Advance Care Planning',
+ desc: 'One-on-one professional consultation to help you and your family plan end-of-life care. Comprehensive explanation of AMD, DNACPR, and EPA — empowering you to make the best decisions.',
+ features: ['One-on-one consultation', 'Full document explanation', 'Personalised recommendation', 'Family communication support'],
+ icon: 'support_agent',
+ cta: 'Book a Consultation',
+ },
+ ];
+
+const approachTitle = isZh ? '我哋嘅服務理念' : 'Our Approach';
+const approachP1 = isZh
+ ? '我哋相信，每個人都應該有權為自己嘅醫療選擇發聲。老友宅醫團隊致力為香港家庭提供專業、體貼、透明嘅 AMD 簽署服務，讓你喺最熟悉嘅環境——自己屋企——完成呢個重要嘅醫療規劃。'
+ : 'We believe everyone should have the right to voice their medical choices. The DoctorNow team is committed to providing professional, caring, and transparent AMD signing services for Hong Kong families — allowing you to complete this important medical planning in the most familiar environment: your own home.';
+const approachP2 = isZh
+ ? '我哋唔只係提供一份文件，而係陪伴你同家人走過人生嘅重要決定。從 WhatsApp 第一句對話，到醫生上門完成簽署，我哋都會以溫暖、耐心、專業嘅態度服務你。'
+ : 'We don\'t just provide a document — we accompany you and your family through life\'s important decisions. From the first WhatsApp message to the doctor completing the signing at your home, we serve you with warmth, patience, and professionalism.';
+
+const ctaTitle = isZh ? '任何服務都可以 WhatsApp 查詢' : 'Inquire about any service on WhatsApp';
+const waUrl = waUrlShort(
+  'AMD-S03',
+  isZh ? 'zh' : 'en',
+  isZh ? '我想了解AMD服務' : 'I want to learn about AMD services'
+);
+
+// Step 2 Part B — content thickening (2026-09-08)
+const processTitle = isZh ? '上門流程' : 'What we do at the home visit';
+const processIntro = isZh
+  ? '由 WhatsApp 預約到完成簽署，全程大約 30–45 分鐘。'
+  : 'From WhatsApp booking to signing completion, the whole visit takes about 30–45 minutes.';
+const processSteps = isZh
+  ? [
+    { n: '01', title: 'WhatsApp 預約', desc: '你提供長者姓名、年期及上門日期時間，我哋確認收費及人手。' },
+    { n: '02', title: '醫生聯絡確認', desc: '醫生會喺上門前一天致電了解長者身體狀況、用藥及病史。' },
+    { n: '03', title: '上門評估', desc: '醫生準時到達，先進行精神行為能力評估，確認長者明白 AMD 內容。' },
+    { n: '04', title: '簽署及見證', desc: '兩名見證人在場，醫生見證下簽署正式文件，全程錄影存檔。' },
+    { n: '05', title: '正本交家屬', desc: '醫生即場解釋重點，正本交畀你哋保管，同時同步副本到診所紀錄。' },
+  ]
+  : [
+    { n: '01', title: 'WhatsApp booking', desc: 'Share the elder\'s name, age and preferred date/time. We confirm pricing and team availability.' },
+    { n: '02', title: 'Pre-visit call', desc: 'Our doctor calls the day before to review the elder\'s conditions, medications and history.' },
+    { n: '03', title: 'Capacity assessment', desc: 'On arrival, the doctor conducts a mental capacity assessment to confirm understanding.' },
+    { n: '04', title: 'Signing with witnesses', desc: 'Two witnesses are present. The doctor witnesses the formal signing; the visit is video-recorded for record.' },
+    { n: '05', title: 'Original documents to family', desc: 'The doctor explains the key terms on-site and hands the originals to your family for safekeeping.' },
+  ];
+
+const audienceTitle = isZh ? '適合對象' : 'Who this is for';
+const audienceIntro = isZh
+  ? '如果你或家人屬於以下三類，我哋嘅服務可以幫到手：'
+  : 'If you or your family member falls into one of these three groups, our services can help:';
+const audienceList = isZh
+  ? [
+    {
+      title: '60+ 歲想自住安排嘅長者',
+      desc: '想喺自己屋企度過人生最後階段，避免入醫院嘅折騰，希望醫療意願被尊重。',
+      icon: 'person',
+    },
+    {
+      title: '為父母規劃嘅子女',
+      desc: '父母年紀大或開始有認知衰退，你希望幫佢哋喺清醒時做好安排，將來唔使臨急臨忙。',
+      icon: 'family_restroom',
+    },
+    {
+      title: '長期病患或紓緩治療中',
+      desc: '確診癌症、心衰竭、腎病等慢性病，想預先表達唔接受無效搶救嘅意願。',
+      icon: 'medical_services',
+    },
+  ]
+  : [
+    {
+      title: 'Older adults aged 60+ planning to age in place',
+      desc: 'You want to spend your final stage at home — avoiding hospital transfers and ensuring your medical wishes are respected.',
+      icon: 'person',
+    },
+    {
+      title: 'Adult children planning for elderly parents',
+      desc: 'Your parents are ageing or showing signs of cognitive decline. You want to help them arrange things while they are still capable.',
+      icon: 'family_restroom',
+    },
+    {
+      title: 'Patients with chronic or life-limiting illness',
+      desc: 'You have been diagnosed with cancer, heart failure, kidney disease or another chronic condition, and want to express your wish to refuse futile resuscitation in advance.',
+      icon: 'medical_services',
+    },
+  ];
+
+const outOfScopeTitle = isZh ? '服務範圍以外' : "What's NOT included";
+const outOfScopeIntro = isZh
+  ? '為咗令你哋有清晰預期，以下係我哋唔會做、或者需要其他專業接手嘅項目：'
+  : 'For full transparency, here is what we do NOT do — or what requires a different professional:';
+const outOfScopeList = isZh
+  ? [
+    { title: '法律諮詢及訴訟', desc: 'AMD 涉及嘅法律效力由你哋自行諮詢律師；如有爭議需透過法庭處理。' },
+    { title: '入院安排及住院照顧', desc: '如果你選擇入院或需要住院治療，我哋會轉介到醫院管理局或私家醫院。' },
+    { title: '殯葬及身後事安排', desc: '殯儀服務、遺體運送、墓園或紀念安排需聯絡持牌殯儀承辦商。' },
+    { title: '強制精神科評估', desc: '如長者被懷疑缺乏簽署能力，我哋會轉介到精神科專科作正式評估。' },
+  ]
+  : [
+    { title: 'Legal advice or litigation', desc: 'Legal effect of the AMD should be confirmed with your own lawyer. Disputes go through the courts.' },
+    { title: 'Hospital admission or inpatient care', desc: 'If hospital admission is needed, we refer you to the Hospital Authority or a private hospital of your choice.' },
+    { title: 'Funeral and post-death arrangements', desc: 'Funeral services, body transport, cemetery or memorial arrangements require a licensed funeral contractor.' },
+    { title: 'Forced psychiatric assessment', desc: 'If an elder is suspected to lack signing capacity, we refer to a psychiatry specialist for formal assessment.' },
+  ];
+
+// Outbound link block (bidirectional to Step 1 Part A)
+const relatedTitle = isZh ? '延伸閱讀' : 'Related reading';
+const relatedIntro = isZh
+  ? '想了解更多細節？以下兩篇文章由我哋嘅醫療團隊撰寫：'
+  : 'Want to dive deeper? The two articles below are written by our medical team:';
+const relatedLinks = isZh
+  ? [
+    { href: '/zh/blog/dnacpr-form-how-to-apply/', label: '不急救紙點申請？醫生一步步教你', desc: '由表格索取、醫生見證到遞交醫管局嘅完整流程。' },
+    { href: '/zh/blog/dementia-patients-amd/', label: '認知障礙症患者可以簽 AMD 嗎？', desc: '當長者開始有記憶衰退，AMD 仲有冇法律效力？醫生解答。' },
+  ]
+  : [
+    { href: '/en/blog/dnacpr-form-how-to-apply/', label: 'How to apply for a DNACPR form — step-by-step from a doctor', desc: 'Full flow from form request, doctor witnessing, to Hospital Authority submission.' },
+    { href: '/en/blog/dementia-patients-amd/', label: 'Can a dementia patient still sign an AMD?', desc: 'When memory decline starts — does the AMD still have legal effect? Our doctors explain.' },
+  ];
+---
+
+<Layout title={pageTitle} description={pageDesc}>
+  <section class="pt-32 pb-20 px-6 md:px-12 bg-surface">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight text-primary">{h1}</h1>
+      <p class="text-lg md:text-xl text-on-surface-variant leading-relaxed max-w-3xl mx-auto">{h1Sub}</p>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+      {servicesList.map((svc) => (
+        <div class="rounded-3xl p-8 bg-surface border border-outline-variant flex flex-col">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-surface-container">
+            <span class="icon-wrapper text-2xl text-primary" set:html={icons[svc.icon]} />
+          </div>
+          <h3 class="font-bold mb-1 text-2xl text-primary">{svc.title}</h3>
+          <p class="font-semibold mb-4 text-secondary">{svc.subtitle}</p>
+          <p class="flex-1 leading-relaxed mb-6 text-lg text-on-surface">{svc.desc}</p>
+          <ul class="space-y-2 mb-8">
+            {svc.features.map((f) => (
+              <li class="flex items-center gap-2 text-sm text-on-surface-variant">
+                <span class="text-primary">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                {f}
+              </li>
+            ))}
+          </ul>
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener"
+            class="block text-center text-white font-bold px-6 py-4 rounded-full no-underline hover:opacity-90 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] bg-primary"
+          >
+            {svc.cta}
+          </a>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface">
+    <div class="max-w-7xl mx-auto">
+      <div class="max-w-3xl mx-auto text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-6">{processTitle}</h2>
+        <p class="text-lg text-on-surface-variant leading-relaxed">{processIntro}</p>
+      </div>
+      <ol class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        {processSteps.map((step) => (
+          <li class="rounded-2xl p-6 bg-surface-container border border-outline-variant">
+            <div class="text-2xl font-bold text-secondary mb-3">{step.n}</div>
+            <h3 class="font-bold mb-2 text-lg text-primary">{step.title}</h3>
+            <p class="text-sm leading-relaxed text-on-surface-variant">{step.desc}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-6">{audienceTitle}</h2>
+        <p class="text-lg text-on-surface-variant leading-relaxed">{audienceIntro}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {audienceList.map((p) => (
+          <div class="rounded-3xl p-8 bg-surface border border-outline-variant">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-primary text-white">
+              <span class="icon-wrapper text-2xl" set:html={icons[p.icon]} />
+            </div>
+            <h3 class="font-bold mb-3 text-xl text-primary">{p.title}</h3>
+            <p class="leading-relaxed text-on-surface">{p.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-6">{outOfScopeTitle}</h2>
+        <p class="text-lg text-on-surface-variant leading-relaxed">{outOfScopeIntro}</p>
+      </div>
+      <div class="space-y-4">
+        {outOfScopeList.map((item) => (
+          <div class="rounded-2xl p-6 bg-surface-container border border-outline-variant">
+            <h3 class="font-bold mb-2 text-lg text-primary">{item.title}</h3>
+            <p class="leading-relaxed text-on-surface-variant">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 bg-surface-container">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-10">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-4">{relatedTitle}</h2>
+        <p class="text-lg text-on-surface-variant leading-relaxed">{relatedIntro}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {relatedLinks.map((l) => (
+          <a
+            href={l.href}
+            class="block rounded-2xl p-6 bg-surface border border-outline-variant no-underline hover:border-primary transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
+          >
+            <h3 class="font-bold mb-2 text-lg text-primary">{l.label}</h3>
+            <p class="leading-relaxed text-on-surface-variant">{l.desc}</p>
+            <span class="inline-block mt-4 text-sm font-semibold text-secondary">{isZh ? '繼續閱讀 →' : 'Read more →'}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide text-primary mb-12">{approachTitle}</h2>
+      <div class="space-y-6 text-lg text-on-surface leading-relaxed">
+        <p>{approachP1}</p>
+        <p>{approachP2}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 px-6 md:px-12 text-white text-center bg-primary">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-wide mb-8">{ctaTitle}</h2>
+      <a
+        href={waUrl}
+        target="_blank"
+        rel="noopener"
+        class="inline-block text-lg font-bold px-8 py-4 rounded-full no-underline hover:opacity-90 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] bg-secondary text-white"
+      >
+        WhatsApp {isZh ? '查詢' : 'Inquire'}
+      </a>
+    </div>
+  </section>
+</Layout>

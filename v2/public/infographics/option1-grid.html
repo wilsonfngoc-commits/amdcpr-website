@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infographic Option 1 — Comparison Grid</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Quicksand', 'Noto Sans TC', sans-serif; background: #FAF6F2; color: #4A4036; padding: 40px 20px; }
+.container { max-width: 900px; margin: 0 auto; }
+h1 { text-align: center; font-size: 28px; font-weight: 700; color: #4F6B5E; margin-bottom: 8px; letter-spacing: 0.02em; }
+.subtitle { text-align: center; font-size: 14px; color: #7A6F64; margin-bottom: 32px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.card { background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 2px 12px rgba(112,141,129,0.1); }
+.card .num { width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: #fff; margin-bottom: 12px; }
+.card h3 { font-size: 16px; font-weight: 700; color: #4F6B5E; margin-bottom: 8px; line-height: 1.4; }
+.card p { font-size: 13px; line-height: 1.6; color: #4A4036; }
+.footer { text-align: center; margin-top: 32px; padding-top: 20px; border-top: 1px solid #E6D7C8; font-size: 12px; color: #7A6F64; }
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>7.31 新例懶人包</h1>
+  <p class="subtitle">AMD 預設醫療指示——5 個你要知的改變</p>
+  <div class="grid">
+    <div class="card">
+      <div class="num" style="background:#4F6B5E;">1</div>
+      <h3>AMD 灰色地帶變明確法律</h3>
+      <p>由普通法進入成文法，醫生執行 AMD 時有清晰法律基礎，唔使再擔心法律責任。</p>
+    </div>
+    <div class="card">
+      <div class="num" style="background:#8F4A42;">2</div>
+      <h3>簽署流程更清晰</h3>
+      <p>18 歲以上、精神健全、自願、書面形式、兩名見證人（一位須為醫生）。</p>
+    </div>
+    <div class="card">
+      <div class="num" style="background:#4F6B5E;">3</div>
+      <h3>三種情況先觸發</h3>
+      <p>末期疾病、持續植物人狀況、晚期不可逆轉疾病。暫時昏迷唔會觸發。</p>
+    </div>
+    <div class="card">
+      <div class="num" style="background:#8F4A42;">4</div>
+      <h3>AMD ≠ 放棄治療</h3>
+      <p>只拒絕維持生命治療（CPR、呼吸機、洗腎），舒緩治療仍繼續。</p>
+    </div>
+    <div class="card" style="grid-column: 1 / -1;">
+      <div class="num" style="background:#4F6B5E;">5</div>
+      <h3>上門簽署更方便</h3>
+      <p>如有需要，我哋註冊西醫團隊可上門完成簽署，全程約 30 分鐘。</p>
+    </div>
+  </div>
+  <div class="footer">DoctorNow AMD · 上門簽署 AMD 服務</div>
+</div>
+</body>
+</html>
