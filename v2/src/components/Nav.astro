@@ -13,6 +13,7 @@ const links = [
   { href: `${prefix}/pricing`, label: t.pricing, match: '/pricing' },
   { href: `${prefix}/faq`, label: t.faq, match: '/faq' },
   { href: `${prefix}/blog`, label: t.blog, match: '/blog' },
+  { href: `${prefix}/about/`, label: t.about, match: '/about', desktopLgOnly: true },
   { href: `${prefix}/contact`, label: t.contact, match: '/contact' },
 ];
 
@@ -45,6 +46,7 @@ function isActive(match: string): boolean {
           class:list={[
             'transition-all duration-700 text-sm font-medium no-underline',
             'ease-[cubic-bezier(0.32,0.72,0,1)]',
+            link.desktopLgOnly ? 'hidden lg:inline' : '',
             isActive(link.match) ? 'text-primary' : 'text-on-surface-variant hover:text-primary',
           ]}
           aria-current={isActive(link.match) ? 'page' : undefined}
